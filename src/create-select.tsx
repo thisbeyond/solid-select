@@ -71,7 +71,7 @@ const createSelect = (props: SelectProps) => {
   };
 
   const [inputValue, setInputValue] = createSignal("");
-  const clearInput = () => setInputValue("");
+  const clearInputValue = () => setInputValue("");
   const [inputIsHidden, setInputIsHidden] = createSignal(false);
   const showInput = () => setInputIsHidden(false);
   const hideInput = () => setInputIsHidden(true);
@@ -89,7 +89,7 @@ const createSelect = (props: SelectProps) => {
   const close = () => {
     if (isOpen()) {
       setIsOpen(false);
-      clearInput();
+      clearInputValue();
       setFocusedOptionIndex(-1);
     }
   };
