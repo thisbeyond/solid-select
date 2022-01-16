@@ -286,7 +286,7 @@ const createSelect = (props: SelectProps) => {
     });
   };
 
-  const listRef = (element: HTMLInputElement) => {
+  const listRef = (element: HTMLElement) => {
     refs.list = element;
 
     if (!element.getAttribute("tabIndex")) {
