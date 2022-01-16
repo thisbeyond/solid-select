@@ -178,6 +178,28 @@ const createSelect = (props: SelectProps) => {
     element.addEventListener("pointerdown", () => {
       open();
     });
+  };
+
+  const inputRef = (element: HTMLInputElement) => {
+    createRenderEffect(() => (element.value = inputValue()));
+    element.addEventListener("input", (event: Event) => {
+      setInputValue((event.target as HTMLInputElement).value);
+    });
+
+    createRenderEffect(() => {
+      element.style.setProperty("opacity", inputIsHidden() ? "0" : "1");
+    });
+
+    element.addEventListener("focus", (event: FocusEvent) => {
+      if (config.onFocus) {
+        config.onFocus(event);
+      }
+    });
+    element.addEventListener("blur", (event: FocusEvent) => {
+      if (config.onBlur) {
+        config.onBlur(event);
+      }
+    });
 
     element.addEventListener("keydown", (event) => {
       switch (event.key) {
@@ -228,28 +250,6 @@ const createSelect = (props: SelectProps) => {
       }
       event.preventDefault();
       event.stopPropagation();
-    });
-  };
-
-  const inputRef = (element: HTMLInputElement) => {
-    createRenderEffect(() => (element.value = inputValue()));
-    element.addEventListener("input", (event: Event) => {
-      setInputValue((event.target as HTMLInputElement).value);
-    });
-
-    createRenderEffect(() => {
-      element.style.setProperty("opacity", inputIsHidden() ? "0" : "1");
-    });
-
-    element.addEventListener("focus", (event: FocusEvent) => {
-      if (config.onFocus) {
-        config.onFocus(event);
-      }
-    });
-    element.addEventListener("blur", (event: FocusEvent) => {
-      if (config.onBlur) {
-        config.onBlur(event);
-      }
     });
   };
 
