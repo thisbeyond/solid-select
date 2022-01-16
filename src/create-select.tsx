@@ -128,10 +128,20 @@ const createSelect = (props: SelectProps) => {
 
   createEffect(
     on(
+      options,
+      (options) => {
+        if (isOpen()) setFocusedOptionIndex(Math.min(0, options.length - 1));
+      },
+      { defer: true }
+    )
+  );
+
+  createEffect(
+    on(
       isOpen,
       (isOpen) => {
         if (isOpen) {
-          if (focusedOptionIndex() === -1) focusOption("next");
+          if (focusedOptionIndex() === -1) focusNextOption();
           showInput();
         } else {
           if (focusedOptionIndex() > -1) setFocusedOptionIndex(-1);
