@@ -76,8 +76,23 @@ const createSelect = (props: SelectProps) => {
 
   const [inputValue, setInputValue] = createSignal("");
   const clearInputValue = () => setInputValue("");
+
   createEffect(
-    on(inputValue, () => config.onInput?.(inputValue()), { defer: true })
+    on(inputValue, (inputValue) => config.onInput?.(inputValue), {
+      defer: true,
+    })
+  );
+
+  createEffect(
+    on(
+      inputValue,
+      (inputValue) => {
+        if (inputValue && !isOpen()) {
+          open();
+        }
+      },
+      { defer: true }
+    )
   );
 
   const [inputIsHidden, setInputIsHidden] = createSignal(false);
@@ -85,22 +100,8 @@ const createSelect = (props: SelectProps) => {
   const hideInput = () => setInputIsHidden(true);
 
   const [isOpen, setIsOpen] = createSignal(false);
-  const open = () => {
-    if (!isOpen()) {
-      setIsOpen(true);
-      showInput();
-      if (focusedOptionIndex() === -1) {
-        focusOption("next");
-      }
-    }
-  };
-  const close = () => {
-    if (isOpen()) {
-      setIsOpen(false);
-      clearInputValue();
-      setFocusedOptionIndex(-1);
-    }
-  };
+  const open = () => setIsOpen(true);
+  const close = () => setIsOpen(false);
 
   const [focusedOptionIndex, setFocusedOptionIndex] = createSignal(-1);
 
@@ -120,11 +121,38 @@ const createSelect = (props: SelectProps) => {
       index = max;
     }
     setFocusedOptionIndex(index);
-    open();
   };
 
   const focusPreviousOption = () => focusOption("previous");
   const focusNextOption = () => focusOption("next");
+
+  createEffect(
+    on(
+      isOpen,
+      (isOpen) => {
+        if (isOpen) {
+          if (focusedOptionIndex() === -1) focusOption("next");
+          showInput();
+        } else {
+          if (focusedOptionIndex() > -1) setFocusedOptionIndex(-1);
+          clearInputValue();
+        }
+      },
+      { defer: true }
+    )
+  );
+
+  createEffect(
+    on(
+      focusedOptionIndex,
+      (focusedOptionIndex) => {
+        if (focusedOptionIndex > -1 && !isOpen()) {
+          open();
+        }
+      },
+      { defer: true }
+    )
+  );
 
   const controlRef = (element: HTMLElement) => {
     element.addEventListener("focusin", () => {
@@ -197,7 +225,6 @@ const createSelect = (props: SelectProps) => {
     createRenderEffect(() => (element.value = inputValue()));
     element.addEventListener("input", (event: Event) => {
       setInputValue((event.target as HTMLInputElement).value);
-      open();
     });
 
     createRenderEffect(() => {
