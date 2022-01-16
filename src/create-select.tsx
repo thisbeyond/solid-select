@@ -164,23 +164,50 @@ const createSelect = (props: SelectProps) => {
     )
   );
 
+  const refs: Record<string, null | HTMLElement> = {
+    control: null,
+    input: null,
+    list: null,
+  };
+
   const controlRef = (element: HTMLElement) => {
+    refs.control = element;
+
+    if (!element.getAttribute("tabIndex")) {
+      element.tabIndex = -1;
+    }
+
     element.addEventListener("focusin", () => {
       showInput();
     });
 
     element.addEventListener("focusout", (event: FocusEvent) => {
-      if (!element.contains(event.relatedTarget as HTMLElement)) {
-        close();
+      const target = event.relatedTarget as HTMLElement;
+      for (const relatedElement of Object.values(refs)) {
+        if (relatedElement?.contains(target)) {
+          event.preventDefault();
+          event.stopPropagation();
+          return;
+        }
       }
+      close();
     });
 
-    element.addEventListener("pointerdown", () => {
+    element.addEventListener("pointerdown", (event) => {
       open();
+      if (refs.input && event.target !== refs.input) {
+        event.preventDefault();
+      }
     });
   };
 
   const inputRef = (element: HTMLInputElement) => {
+    refs.input = element;
+
+    if (!element.getAttribute("tabIndex")) {
+      element.tabIndex = -1;
+    }
+
     createRenderEffect(() => (element.value = inputValue()));
     element.addEventListener("input", (event: Event) => {
       setInputValue((event.target as HTMLInputElement).value);
@@ -253,6 +280,19 @@ const createSelect = (props: SelectProps) => {
     });
   };
 
+  const listRef = (element: HTMLInputElement) => {
+    refs.list = element;
+
+    if (!element.getAttribute("tabIndex")) {
+      element.tabIndex = -1;
+    }
+
+    element.addEventListener("pointerdown", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+    });
+  };
+
   return {
     get value() {
       return value();
@@ -268,6 +308,7 @@ const createSelect = (props: SelectProps) => {
     isOpen,
     control: controlRef,
     input: inputRef,
+    list: listRef,
   };
 };
 
