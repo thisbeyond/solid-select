@@ -19,6 +19,7 @@ type SelectProps = {
   optionToValue?: (option: Option) => Value;
   createNewOption?: (inputValue: string) => Option;
   onChange?: (value: ValueType) => void;
+  onInput?: (inputValue: string) => void;
   onFocus?: (event: FocusEvent) => void;
   onBlur?: (event: FocusEvent) => void;
 };
@@ -56,7 +57,10 @@ const createSelect = (props: SelectProps) => {
 
   createEffect(on(_value, () => config.onChange?.(value()), { defer: true }));
 
-  const options = () => config.options;
+  const options =
+    typeof config.options === "function"
+      ? config.options
+      : () => config.options;
   const optionsCount = () => options().length;
 
   const pickOption = (option: Option) => {
@@ -72,6 +76,10 @@ const createSelect = (props: SelectProps) => {
 
   const [inputValue, setInputValue] = createSignal("");
   const clearInputValue = () => setInputValue("");
+  createEffect(
+    on(inputValue, () => config.onInput?.(inputValue()), { defer: true })
+  );
+
   const [inputIsHidden, setInputIsHidden] = createSignal(false);
   const showInput = () => setInputIsHidden(false);
   const hideInput = () => setInputIsHidden(true);
