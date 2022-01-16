@@ -272,6 +272,12 @@ const createSelect = (props: SelectProps) => {
             }
           }
           break;
+        case "Tab":
+          if (focusedOption() && isOpen()) {
+            pickOption(focusedOption());
+            break;
+          }
+          return;
         default:
           return;
       }
