@@ -12,7 +12,7 @@ type Value = any;
 
 type ValueType = Value | Value[];
 
-type SelectProps = {
+type CreateSelectProps = {
   options: Option[];
   initialValue?: ValueType;
   multiple?: boolean;
@@ -23,7 +23,7 @@ type SelectProps = {
   onBlur?: (event: FocusEvent) => void;
 };
 
-const createSelect = (props: SelectProps) => {
+const createSelect = (props: CreateSelectProps) => {
   const config = mergeProps(
     {
       multiple: false,
