@@ -12,7 +12,7 @@ type SingleValue = any;
 
 type Value = SingleValue | SingleValue[];
 
-type CreateSelectProps = {
+interface CreateSelectProps {
   options: Option[];
   initialValue?: Value;
   multiple?: boolean;
