@@ -17,7 +17,6 @@ type SelectProps = {
   initialValue?: ValueType;
   multiple?: boolean;
   optionToValue?: (option: Option) => Value;
-  createNewOption?: (inputValue: string) => Option;
   onChange?: (value: ValueType) => void;
   onInput?: (inputValue: string) => void;
   onFocus?: (event: FocusEvent) => void;
