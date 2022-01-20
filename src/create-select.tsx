@@ -308,9 +308,11 @@ const createSelect = (props: CreateSelectProps) => {
     get inputValue() {
       return inputValue();
     },
+    get isOpen() {
+      return isOpen();
+    },
     pickOption,
     isOptionFocused,
-    isOpen,
     control: controlRef,
     input: inputRef,
     list: listRef,
