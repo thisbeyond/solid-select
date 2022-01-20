@@ -8,16 +8,16 @@ import {
 
 type Option = any;
 
-type Value = any;
+type SingleValue = any;
 
-type ValueType = Value | Value[];
+type Value = SingleValue | SingleValue[];
 
 type CreateSelectProps = {
   options: Option[];
-  initialValue?: ValueType;
+  initialValue?: Value;
   multiple?: boolean;
-  optionToValue?: (option: Option) => Value;
-  onChange?: (value: ValueType) => void;
+  optionToValue?: (option: Option) => SingleValue;
+  onChange?: (value: Value) => void;
   onInput?: (inputValue: string) => void;
   onFocus?: (event: FocusEvent) => void;
   onBlur?: (event: FocusEvent) => void;
@@ -27,12 +27,12 @@ const createSelect = (props: CreateSelectProps) => {
   const config = mergeProps(
     {
       multiple: false,
-      optionToValue: (option: Option): Value => option,
+      optionToValue: (option: Option): SingleValue => option,
     },
     props
   );
 
-  const parseValue = (value: ValueType) => {
+  const parseValue = (value: Value) => {
     if (config.multiple && Array.isArray(value)) {
       return value;
     } else if (!config.multiple && !Array.isArray(value)) {
@@ -51,7 +51,7 @@ const createSelect = (props: CreateSelectProps) => {
   );
 
   const value = () => (config.multiple ? _value() : _value()[0] || null);
-  const setValue = (value: ValueType) => _setValue(parseValue(value));
+  const setValue = (value: Value) => _setValue(parseValue(value));
   const clearValue = () => _setValue([]);
 
   createEffect(on(_value, () => config.onChange?.(value()), { defer: true }));
@@ -253,7 +253,7 @@ const createSelect = (props: CreateSelectProps) => {
             return;
           }
           if (config.multiple) {
-            const currentValue = value() as Value[];
+            const currentValue = value() as SingleValue[];
             setValue([...currentValue.slice(0, -1)]);
           } else {
             clearValue();
@@ -320,3 +320,4 @@ const createSelect = (props: CreateSelectProps) => {
 };
 
 export { createSelect };
+export type { CreateSelectProps, SingleValue, Value, Option };
