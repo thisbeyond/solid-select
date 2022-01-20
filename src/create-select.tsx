@@ -164,13 +164,13 @@ const createSelect = (props: CreateSelectProps) => {
   );
 
   const refs: Record<string, null | HTMLElement> = {
-    control: null,
-    input: null,
-    list: null,
+    containerRef: null,
+    inputRef: null,
+    listRef: null,
   };
 
-  const controlRef = (element: HTMLElement) => {
-    refs.control = element;
+  const containerRef = (element: HTMLElement) => {
+    refs.containerRef = element;
 
     if (!element.getAttribute("tabIndex")) {
       element.tabIndex = -1;
@@ -194,14 +194,14 @@ const createSelect = (props: CreateSelectProps) => {
 
     element.addEventListener("pointerdown", (event) => {
       open();
-      if (refs.input && event.target !== refs.input) {
+      if (refs.inputRef && event.target !== refs.inputRef) {
         event.preventDefault();
       }
     });
   };
 
   const inputRef = (element: HTMLInputElement) => {
-    refs.input = element;
+    refs.inputRef = element;
 
     if (!element.getAttribute("tabIndex")) {
       element.tabIndex = -1;
@@ -286,7 +286,7 @@ const createSelect = (props: CreateSelectProps) => {
   };
 
   const listRef = (element: HTMLElement) => {
-    refs.list = element;
+    refs.listRef = element;
 
     if (!element.getAttribute("tabIndex")) {
       element.tabIndex = -1;
@@ -313,9 +313,9 @@ const createSelect = (props: CreateSelectProps) => {
     },
     pickOption,
     isOptionFocused,
-    control: controlRef,
-    input: inputRef,
-    list: listRef,
+    containerRef,
+    inputRef,
+    listRef,
   };
 };
 
