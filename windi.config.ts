@@ -7,7 +7,10 @@ export default defineConfig({
     plugin(({ addUtilities }) => {
       addUtilities({
         ".text-inherit": {
-          fontSize: "inherit",
+          font: "inherit",
+        },
+        ".outline-zero": {
+          outline: "none",
         },
       });
     }),
@@ -28,11 +31,12 @@ export default defineConfig({
     "solid-select-container": "relative",
     "solid-select-control":
       "grid grid-cols-1 py-1 px-2 border border-gray-200 rounded " +
-      "focus-within:(outline-dotted-gray-300)",
+      "focus-within:(outline-dotted-gray-300) leading-normal",
     "solid-select-value":
       "col-start-1 row-start-1 data-has-no-value:text-gray-400",
     "solid-select-input":
-      "col-start-1 row-start-1 bg-transparent w-full outline-none text-inherit",
+      "col-start-1 row-start-1 bg-transparent w-full outline-none m-0 p-0 " +
+      "border-0 text-inherit",
     "solid-select-list":
       "absolute min-w-full bg-[inherit] color-[inherit] shadow-lg " +
       "whitespace-nowrap rounded-sm mt-1 p-2 z-1",
