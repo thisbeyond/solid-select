@@ -83,7 +83,12 @@ type ContainerProps = { ref: SelectReturn["containerRef"] } & Pick<
 
 const Container: Component<ContainerProps> = (props) => {
   return (
-    <div class={props.class} ref={props.ref} style={{ position: "relative" }}>
+    <div
+      class={`solid-select-container ${
+        props.class !== undefined ? props.class : ""
+      }`}
+      ref={props.ref}
+    >
       {props.children}
     </div>
   );
@@ -94,12 +99,7 @@ type ControlProps = Omit<CommonProps, "class"> &
 
 const Control = (props: ControlProps) => {
   return (
-    <div
-      style={{
-        display: "grid",
-        "grid-template-columns": "repeat(1, minmax(0, 1fr))",
-      }}
-    >
+    <div class="solid-select-control">
       <Show when={!props.inputValue}>
         <Value
           value={props.format(props.value, "value")}
@@ -115,13 +115,7 @@ type ValueProps = { value?: string } & Pick<CommonProps, "placeholder">;
 
 const Value: Component<ValueProps> = (props) => {
   return (
-    <div
-      style={{
-        "grid-column": "1",
-        "grid-row": "1",
-      }}
-      data-has-value={!!props.value}
-    >
+    <div class="solid-select-value" data-has-value={!!props.value}>
       {props.value ?? props.placeholder}
     </div>
   );
@@ -134,13 +128,7 @@ const Input: Component<InputProps> = (props) => {
     <input
       ref={props.ref}
       name={props.name}
-      style={{
-        "grid-column": 1,
-        "grid-row": 1,
-        background: "transparent",
-        outline: "none",
-        width: "100%",
-      }}
+      class="solid-select-input"
       type="text"
       tabIndex={0}
       autocomplete="off"
@@ -164,13 +152,7 @@ type ListProps = {
 const List = (props: ListProps) => {
   return (
     <Show when={props.isOpen}>
-      <div
-        ref={props.ref}
-        style={{
-          position: "absolute",
-          "min-width": "100%",
-        }}
-      >
+      <div ref={props.ref} class="solid-select-list">
         <For each={props.options} fallback={"No options"}>
           {props.children}
         </For>
@@ -188,9 +170,7 @@ const Option: Component<OptionProps> = (props) => {
   return (
     <div
       data-is-focused={props.isFocused}
-      style={{
-        cursor: "pointer",
-      }}
+      class="solid-select-option"
       onClick={props.pickOption}
     >
       {props.children}

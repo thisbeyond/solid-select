@@ -1,2 +1,3 @@
+import "virtual:windi.css";
 export { createSelect } from "./create-select";
-export { Select } from "./Select";
+export { Select } from "./select";
