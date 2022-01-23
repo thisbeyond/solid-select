@@ -22,6 +22,7 @@ interface CommonProps {
   placeholder?: string;
   name?: string;
   class?: string;
+  autofocus?: boolean;
 }
 
 type SelectReturn = ReturnType<typeof createSelect>;
@@ -54,6 +55,7 @@ const Select = (props: SelectProps) => {
         format={local.format}
         placeholder={local.placeholder}
         name={local.name}
+        autofocus={local.autofocus}
         value={select.value}
         inputValue={select.inputValue}
         inputRef={select.inputRef}
@@ -106,7 +108,11 @@ const Control = (props: ControlProps) => {
           placeholder={props.placeholder}
         />
       </Show>
-      <Input ref={props.inputRef} name={props.name} />
+      <Input
+        ref={props.inputRef}
+        name={props.name}
+        autofocus={props.autofocus}
+      />
     </div>
   );
 };
@@ -121,7 +127,10 @@ const Value: Component<ValueProps> = (props) => {
   );
 };
 
-type InputProps = { ref: SelectReturn["inputRef"] } & Pick<CommonProps, "name">;
+type InputProps = { ref: SelectReturn["inputRef"] } & Pick<
+  CommonProps,
+  "name" | "autofocus"
+>;
 
 const Input: Component<InputProps> = (props) => {
   return (
@@ -133,6 +142,7 @@ const Input: Component<InputProps> = (props) => {
       tabIndex={0}
       autocomplete="off"
       autocapitalize="none"
+      autofocus={props.autofocus}
       onKeyDown={(event: KeyboardEvent) => {
         if (event.key === "Escape") {
           event.preventDefault();
