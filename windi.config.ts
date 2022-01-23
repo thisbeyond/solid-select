@@ -4,6 +4,13 @@ import plugin from "windicss/plugin";
 export default defineConfig({
   preflight: false,
   plugins: [
+    plugin(({ addUtilities }) => {
+      addUtilities({
+        ".text-inherit": {
+          fontSize: "inherit",
+        },
+      });
+    }),
     plugin(({ addVariant }) => {
       addVariant("data-is-focused", ({ modifySelectors }) => {
         return modifySelectors(({ className }) => {
@@ -25,7 +32,7 @@ export default defineConfig({
     "solid-select-value":
       "col-start-1 row-start-1 data-has-no-value:text-gray-400",
     "solid-select-input":
-      "col-start-1 row-start-1 bg-transparent w-full outline-none",
+      "col-start-1 row-start-1 bg-transparent w-full outline-none text-inherit",
     "solid-select-list":
       "absolute min-w-full bg-[inherit] color-[inherit] shadow-lg " +
       "whitespace-nowrap rounded-sm mt-1 p-2 z-1",
