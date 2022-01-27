@@ -5,7 +5,7 @@
 - **Built for [Solid](https://solidjs.com/):** leverages fine-grained reactivity
   primitives for coordination.
 - **Flexible:** built to support a wide range of cases, from single selects to
-  multi-select tag lists.
+  multi-select autocomplete lists.
 - **Extendable:** use the pre-fabricated components or build your own from the
   core primitives.
 - **Zero dependencies:** Just pair with Solid and good to go.
