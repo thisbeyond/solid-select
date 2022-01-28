@@ -1,5 +1,6 @@
 import {
   createEffect,
+  createMemo,
   createRenderEffect,
   createSignal,
   mergeProps,
@@ -13,7 +14,7 @@ type SingleValue = any;
 type Value = SingleValue | SingleValue[];
 
 interface CreateSelectProps {
-  options: Option[];
+  options: Option[] | ((inputValue: string) => Option[]);
   initialValue?: Value;
   multiple?: boolean;
   optionToValue?: (option: Option) => SingleValue;
@@ -21,7 +22,7 @@ interface CreateSelectProps {
   onInput?: (inputValue: string) => void;
   onFocus?: (event: FocusEvent) => void;
   onBlur?: (event: FocusEvent) => void;
-};
+}
 
 const createSelect = (props: CreateSelectProps) => {
   const config = mergeProps(
@@ -56,23 +57,6 @@ const createSelect = (props: CreateSelectProps) => {
 
   createEffect(on(_value, () => config.onChange?.(value()), { defer: true }));
 
-  const options =
-    typeof config.options === "function"
-      ? config.options
-      : () => config.options;
-  const optionsCount = () => options().length;
-
-  const pickOption = (option: Option) => {
-    const value = config.optionToValue(option);
-    if (config.multiple) {
-      setValue([..._value(), value]);
-    } else {
-      setValue(value);
-    }
-    close();
-    hideInput();
-  };
-
   const [inputValue, setInputValue] = createSignal("");
   const clearInputValue = () => setInputValue("");
 
@@ -93,6 +77,26 @@ const createSelect = (props: CreateSelectProps) => {
       { defer: true }
     )
   );
+
+  const options =
+    typeof config.options === "function"
+      ? createMemo(
+          () => (config.options as Function)(inputValue()),
+          config.options(inputValue())
+        )
+      : () => config.options;
+  const optionsCount = () => options().length;
+
+  const pickOption = (option: Option) => {
+    const value = config.optionToValue(option);
+    if (config.multiple) {
+      setValue([..._value(), value]);
+    } else {
+      setValue(value);
+    }
+    close();
+    hideInput();
+  };
 
   const [inputIsHidden, setInputIsHidden] = createSignal(false);
   const showInput = () => setInputIsHidden(false);
