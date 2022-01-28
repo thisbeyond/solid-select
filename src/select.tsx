@@ -36,7 +36,7 @@ const Select = (props: SelectProps) => {
       {
         format: ((data, type) => data) as CommonProps["format"],
         placeholder: "Select...",
-        readonly: true,
+        readonly: typeof props.options !== "function",
       },
       props
     ),
