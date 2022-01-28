@@ -23,6 +23,7 @@ interface CommonProps {
   name?: string;
   class?: string;
   autofocus?: boolean;
+  readonly?: boolean;
 }
 
 type SelectReturn = ReturnType<typeof createSelect>;
@@ -35,6 +36,7 @@ const Select = (props: SelectProps) => {
       {
         format: ((data, type) => data) as CommonProps["format"],
         placeholder: "Select...",
+        readonly: true,
       },
       props
     ),
@@ -56,6 +58,7 @@ const Select = (props: SelectProps) => {
         placeholder={local.placeholder}
         name={local.name}
         autofocus={local.autofocus}
+        readonly={local.readonly}
         value={select.value}
         inputValue={select.inputValue}
         inputRef={select.inputRef}
@@ -112,6 +115,7 @@ const Control = (props: ControlProps) => {
         ref={props.inputRef}
         name={props.name}
         autofocus={props.autofocus}
+        readonly={props.readonly}
       />
     </div>
   );
@@ -129,7 +133,7 @@ const Value: Component<ValueProps> = (props) => {
 
 type InputProps = { ref: SelectReturn["inputRef"] } & Pick<
   CommonProps,
-  "name" | "autofocus"
+  "name" | "autofocus" | "readonly"
 >;
 
 const Input: Component<InputProps> = (props) => {
@@ -143,6 +147,7 @@ const Input: Component<InputProps> = (props) => {
       autocomplete="off"
       autocapitalize="none"
       autofocus={props.autofocus}
+      readonly={props.readonly}
       onKeyDown={(event: KeyboardEvent) => {
         if (event.key === "Escape") {
           event.preventDefault();

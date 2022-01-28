@@ -36,7 +36,7 @@ export default defineConfig({
       "col-start-1 row-start-1 data-has-no-value:text-gray-400",
     "solid-select-input":
       "col-start-1 row-start-1 bg-transparent w-full outline-none m-0 p-0 " +
-      "border-0 text-inherit",
+      "border-0 text-inherit read-only:cursor-default",
     "solid-select-list":
       "absolute min-w-full bg-[inherit] color-[inherit] shadow-lg " +
       "whitespace-nowrap rounded-sm mt-1 p-2 z-1",
