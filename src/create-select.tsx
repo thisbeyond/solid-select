@@ -105,6 +105,7 @@ const createSelect = (props: CreateSelectProps) => {
   const [isOpen, setIsOpen] = createSignal(false);
   const open = () => setIsOpen(true);
   const close = () => setIsOpen(false);
+  const toggle = () => setIsOpen(!isOpen());
 
   const [focusedOptionIndex, setFocusedOptionIndex] = createSignal(-1);
 
@@ -197,7 +198,7 @@ const createSelect = (props: CreateSelectProps) => {
     });
 
     element.addEventListener("pointerdown", (event) => {
-      open();
+      toggle();
       if (refs.inputRef && event.target !== refs.inputRef) {
         event.preventDefault();
       }
