@@ -5,18 +5,28 @@ const splitOn = (sliceable: string, ...indices: number[]) =>
     sliceable.slice(index, indices[indexPosition + 1])
   );
 
-const createFilterable = (options: Option[]) => {
+const createFilterable = (
+  options: Option[],
+  key: string | undefined = undefined
+) => {
+  const getTarget = (data: Option | Value) =>
+    data !== null && key !== undefined ? data[key] : data;
+
   const filterableOptions = (inputValue: string): Option[] => {
     if (!inputValue) {
-      return options.map((option) => ({ label: option, value: option }));
+      return options.map((option) => ({
+        label: getTarget(option),
+        value: option,
+      }));
     }
 
     const length = inputValue.length;
     const filteredOptions = [];
     for (const option of options) {
-      const index = option.indexOf(inputValue);
+      const target = getTarget(option);
+      const index = target.indexOf(inputValue);
       if (index > -1) {
-        const parts = splitOn(option, index, index + length);
+        const parts = splitOn(target, index, index + length);
         const label = (
           <>
             {parts[0]}
@@ -35,7 +45,7 @@ const createFilterable = (options: Option[]) => {
 
   const optionToValue = (option: Option) => option.value;
   const format = (data: Option | Value, type: "option" | "value") =>
-    type === "option" ? data.label : data;
+    type === "option" ? data.label : getTarget(data);
 
   return {
     options: filterableOptions,
