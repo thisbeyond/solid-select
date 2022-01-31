@@ -44,6 +44,7 @@ const Select = (props: SelectProps) => {
       "options",
       "optionToValue",
       "initialValue",
+      "multiple",
       "onInput",
       "onChange",
       "onBlur",
@@ -62,6 +63,7 @@ const Select = (props: SelectProps) => {
         value={select.value}
         inputValue={select.inputValue}
         inputRef={select.inputRef}
+        multiple={select.multiple}
       />
       <List
         ref={select.listRef}
@@ -100,16 +102,28 @@ const Container: Component<ContainerProps> = (props) => {
 };
 
 type ControlProps = Omit<CommonProps, "class"> &
-  Pick<SelectReturn, "value" | "inputValue" | "inputRef">;
+  Pick<SelectReturn, "value" | "multiple" | "inputValue" | "inputRef">;
 
 const Control = (props: ControlProps) => {
+  const hasValue = () =>
+    props.multiple ? !!props.value.length : !!props.value;
+
   return (
-    <div class="solid-select-control">
-      <Show when={!props.inputValue}>
-        <Value
-          value={props.format(props.value, "value")}
-          placeholder={props.placeholder}
-        />
+    <div
+      class="solid-select-control"
+      data-multiple={props.multiple}
+      data-has-value={hasValue()}
+    >
+      <Show when={!hasValue() && !props.inputValue}>
+        <Placeholder>{props.placeholder}</Placeholder>
+      </Show>
+      <Show when={props.value && !props.multiple && !props.inputValue}>
+        <SingleValue>{props.format(props.value, "value")}</SingleValue>
+      </Show>
+      <Show when={props.value && props.multiple}>
+        <For each={props.value}>
+          {(value) => <MultiValue>{props.format(value, "value")}</MultiValue>}
+        </For>
       </Show>
       <Input
         ref={props.inputRef}
@@ -121,14 +135,18 @@ const Control = (props: ControlProps) => {
   );
 };
 
-type ValueProps = { value?: string } & Pick<CommonProps, "placeholder">;
+type PlaceholderProps = Pick<CommonProps, "placeholder">;
 
-const Value: Component<ValueProps> = (props) => {
-  return (
-    <div class="solid-select-value" data-has-value={!!props.value}>
-      {props.value ?? props.placeholder}
-    </div>
-  );
+const Placeholder: Component<PlaceholderProps> = (props) => {
+  return <div class="solid-select-placeholder">{props.children}</div>;
+};
+
+const SingleValue: Component<{}> = (props) => {
+  return <div class="solid-select-single-value">{props.children}</div>;
+};
+
+const MultiValue: Component<{}> = (props) => {
+  return <div class="solid-select-multi-value">{props.children}</div>;
 };
 
 type InputProps = { ref: SelectReturn["inputRef"] } & Pick<
@@ -148,6 +166,7 @@ const Input: Component<InputProps> = (props) => {
       autocapitalize="none"
       autofocus={props.autofocus}
       readonly={props.readonly}
+      size={1}
       onKeyDown={(event: KeyboardEvent) => {
         if (event.key === "Escape") {
           event.preventDefault();
@@ -184,7 +203,7 @@ type OptionProps = {
 const Option: Component<OptionProps> = (props) => {
   return (
     <div
-      data-is-focused={props.isFocused}
+      data-focused={props.isFocused}
       class="solid-select-option"
       onClick={props.pickOption}
     >
@@ -193,4 +212,14 @@ const Option: Component<OptionProps> = (props) => {
   );
 };
 
-export { Select, Input, Value, List, Option };
+export {
+  Select,
+  Container,
+  Control,
+  Placeholder,
+  SingleValue,
+  MultiValue,
+  Input,
+  List,
+  Option,
+};
