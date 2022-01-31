@@ -316,6 +316,7 @@ const createSelect = (props: CreateSelectProps) => {
     get isOpen() {
       return isOpen();
     },
+    multiple: config.multiple,
     pickOption,
     isOptionFocused,
     containerRef,
