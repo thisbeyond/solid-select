@@ -5,12 +5,9 @@ const splitOn = (sliceable: string, ...indices: number[]) =>
     sliceable.slice(index, indices[indexPosition + 1])
   );
 
-const createFilterable = (
-  options: Option[],
-  key: string | undefined = undefined
-) => {
+const createFilterable = (options: Option[], config?: { key?: string }) => {
   const getTarget = (data: Option | Value) =>
-    data !== null && key !== undefined ? data[key] : data;
+    data !== null && config?.key !== undefined ? data[config.key] : data;
 
   const filterableOptions = (inputValue: string): Option[] => {
     if (!inputValue) {
