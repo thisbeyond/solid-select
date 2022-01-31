@@ -93,9 +93,9 @@ const createSelect = (props: CreateSelectProps) => {
       setValue([..._value(), value]);
     } else {
       setValue(value);
+      hideInput();
     }
     close();
-    hideInput();
   };
 
   const [inputIsHidden, setInputIsHidden] = createSignal(false);
