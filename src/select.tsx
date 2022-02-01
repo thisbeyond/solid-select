@@ -61,6 +61,7 @@ const Select = (props: SelectProps) => {
         autofocus={local.autofocus}
         readonly={local.readonly}
         value={select.value}
+        setValue={select.setValue}
         inputValue={select.inputValue}
         inputRef={select.inputRef}
         multiple={select.multiple}
@@ -102,11 +103,19 @@ const Container: Component<ContainerProps> = (props) => {
 };
 
 type ControlProps = Omit<CommonProps, "class"> &
-  Pick<SelectReturn, "value" | "multiple" | "inputValue" | "inputRef">;
+  Pick<
+    SelectReturn,
+    "value" | "setValue" | "multiple" | "inputValue" | "inputRef"
+  >;
 
 const Control = (props: ControlProps) => {
   const hasValue = () =>
     props.multiple ? !!props.value.length : !!props.value;
+
+  const removeValue = (index: number) => {
+    const value = props.value;
+    props.setValue([...value.slice(0, index), ...value.slice(index + 1)]);
+  };
 
   return (
     <div
@@ -122,7 +131,11 @@ const Control = (props: ControlProps) => {
       </Show>
       <Show when={props.value && props.multiple}>
         <For each={props.value}>
-          {(value) => <MultiValue>{props.format(value, "value")}</MultiValue>}
+          {(value, index) => (
+            <MultiValue onRemove={() => removeValue(index())}>
+              {props.format(value, "value")}
+            </MultiValue>
+          )}
         </For>
       </Show>
       <Input
@@ -145,8 +158,20 @@ const SingleValue: Component<{}> = (props) => {
   return <div class="solid-select-single-value">{props.children}</div>;
 };
 
-const MultiValue: Component<{}> = (props) => {
-  return <div class="solid-select-multi-value">{props.children}</div>;
+const MultiValue: Component<{ onRemove: () => void }> = (props) => {
+  return (
+    <div class="solid-select-multi-value">
+      {props.children}
+      <button
+        on:click={(event) => {
+          event.stopPropagation();
+          props.onRemove();
+        }}
+      >
+        ⨯
+      </button>
+    </div>
+  );
 };
 
 type InputProps = { ref: SelectReturn["inputRef"] } & Pick<

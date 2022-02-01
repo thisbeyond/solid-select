@@ -198,9 +198,14 @@ const createSelect = (props: CreateSelectProps) => {
     });
 
     element.addEventListener("pointerdown", (event) => {
-      toggle();
       if (refs.inputRef && event.target !== refs.inputRef) {
         event.preventDefault();
+      }
+    });
+
+    element.addEventListener("click", (event) => {
+      if (!refs.listRef || event.target !== refs.listRef) {
+        toggle();
       }
     });
   };
@@ -307,6 +312,7 @@ const createSelect = (props: CreateSelectProps) => {
     get value() {
       return value();
     },
+    setValue,
     get options() {
       return options();
     },
