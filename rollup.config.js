@@ -4,5 +4,5 @@ import css from "rollup-plugin-css-only";
 
 export default withSolid({
   input: "src/index.tsx",
-  plugins: [...WindiCSS({}), css({ output: "style.css" })],
+  plugins: [...WindiCSS(), css({ output: "style.css" })],
 });
