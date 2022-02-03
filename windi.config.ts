@@ -43,6 +43,7 @@ export default defineConfig({
     "solid-select-multi-value":
       "flex items-center rounded px-[4px] bg-gray-100 " +
       "text-[85%] leading-[inherit]",
+    "solid-select-multi-value-remove": "px-1 hover:text-shadow-xl",
     "solid-select-input":
       "col-start-1 row-start-1 flex-1 bg-transparent outline-none m-0 p-0 " +
       "border-0 text-inherit read-only:cursor-default",

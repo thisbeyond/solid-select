@@ -163,7 +163,8 @@ const MultiValue: Component<{ onRemove: () => void }> = (props) => {
     <div class="solid-select-multi-value">
       {props.children}
       <button
-        on:click={(event) => {
+        class="solid-select-multi-value-remove"
+        on:click={(event: MouseEvent) => {
           event.stopPropagation();
           props.onRemove();
         }}
