@@ -68,5 +68,5 @@ find.
 I published my first Solid library (https://solid-dnd.com) a short while back as
 a first dabble in sharing what I had learnt on a personal project. That went
 well so when I had to create a multi-select autocomplete control for another
-personal project I knew I'd be sharing that too - and so `Solid Select` came to :)
-be.
+personal project I knew I'd be sharing that too - and so `Solid Select` came to
+be :)
