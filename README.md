@@ -1,6 +1,8 @@
-<p align="center">
-  <h1>Solid Select</h1>
-</p>
+<a href="https://solid-select.com">
+    <img
+      alt="Solid Select- The Select component for Solid."
+      src="./resources/solid-select-1.png">
+  </a>
 
 - **Built for [Solid](https://solidjs.com/):** leverages fine-grained reactivity
   primitives for coordination.
@@ -10,7 +12,7 @@
   core primitives.
 - **Zero dependencies:** Just pair with Solid and good to go.
 
-![solid select preview](./resources/solid-select-preview-small.gif?raw=true)
+![solid select preview](./resources/solid-select-preview.gif?raw=true)
 
 ## How do I get started? 🧭
 
@@ -23,19 +25,33 @@ npm install @thisbeyond/solid-select
 Use it:
 
 ```jsx
+import { Select } from "@thisbeyond/solid-select";
+import "@thisbeyond/solid-select/style.css";
+
 const App = () => {
   return (
-    <>
-    </>
+    <div>
+      <Select options={["apple", "banana", "pear", "pineapple", "kiwi"]} />
+    </div>
   );
 };
 
 export default App;
 ```
 
+See more examples at https://solid-select.com
+
 ## What's implemented? ✔️
 
-- [x]
+- [x] A high level `Select` component that can be configured with either a
+  static or dynamic list of options.
+- [x] Support for single value selection or multiple value selection.
+- [x] `createFilterable` helper for filtering options based on input value
+  (complete with match highlighting). Works with lists of plain strings or can
+  be passed a 'key' to filter against lists of objects.
+- [x] Opt-in sensible default styling. Customise easily or style from scratch.
+- [x] Composable building blocks to create your own control.
+- [x] Lower level `createSelect` primitive if you just want the core logic.
 
 ## Who made this? ✍
 
@@ -43,4 +59,14 @@ export default App;
 
 ## Why did you make it?
 
-...
+I've been part of the [SolidJS community](https://discord.com/invite/solidjs)
+for a while now and one of the things I really like is the emphasis on trying
+things out and sharing them (https://hack.solidjs.com). The ecosystem is small
+which creates a lot of opportunity and a lower barrier to entry for sharing I
+find.
+
+I published my first Solid library (https://solid-dnd.com) a short while back as
+a first dabble in sharing what I had learnt on a personal project. That went
+well so when I had to create a multi-select autocomplete control for another
+personal project I knew I'd be sharing that too - and so `Solid Select` came to :)
+be.
