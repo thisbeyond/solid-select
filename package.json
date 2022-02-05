@@ -1,6 +1,6 @@
 {
   "name": "@thisbeyond/solid-select",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "The Select component for Solid.",
   "homepage": "https://github.com/thisbeyond/solid-select#readme",
   "license": "MIT",
