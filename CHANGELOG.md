@@ -8,6 +8,12 @@
   The reactive property handles the differences between 'multiple' and 'single'
   value modes correctly in order to return an accurate boolean value.
 
+### Fixed
+
+- Fix reliance on implicit boolean conversion for control show logic. Use the
+  new `hasValue` check instead to properly account for multi vs single value
+  differences.
+
 ## [0.2.1] - 2022-02-05
 
 ### Fixed

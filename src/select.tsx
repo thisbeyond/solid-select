@@ -124,10 +124,10 @@ const Control = (props: ControlProps) => {
       <Show when={!props.hasValue && !props.inputValue}>
         <Placeholder>{props.placeholder}</Placeholder>
       </Show>
-      <Show when={props.value && !props.multiple && !props.inputValue}>
+      <Show when={props.hasValue && !props.multiple && !props.inputValue}>
         <SingleValue>{props.format(props.value, "value")}</SingleValue>
       </Show>
-      <Show when={props.value && props.multiple}>
+      <Show when={props.hasValue && props.multiple}>
         <For each={props.value}>
           {(value, index) => (
             <MultiValue onRemove={() => removeValue(index())}>
