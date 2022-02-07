@@ -54,6 +54,7 @@ const createSelect = (props: CreateSelectProps) => {
   const value = () => (config.multiple ? _value() : _value()[0] || null);
   const setValue = (value: Value) => _setValue(parseValue(value));
   const clearValue = () => _setValue([]);
+  const hasValue = () => !!(config.multiple ? value().length : value());
 
   createEffect(on(_value, () => config.onChange?.(value()), { defer: true }));
 
@@ -311,6 +312,9 @@ const createSelect = (props: CreateSelectProps) => {
   return {
     get value() {
       return value();
+    },
+    get hasValue() {
+      return hasValue();
     },
     setValue,
     get options() {

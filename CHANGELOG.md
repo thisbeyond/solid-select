@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- Expose a `hasValue` property as part of the `createSelect` returned interface.
+  The reactive property handles the differences between 'multiple' and 'single'
+  value modes correctly in order to return an accurate boolean value.
+
 ## [0.2.1] - 2022-02-05
 
 ### Fixed

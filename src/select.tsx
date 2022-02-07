@@ -61,6 +61,7 @@ const Select = (props: SelectProps) => {
         autofocus={local.autofocus}
         readonly={local.readonly}
         value={select.value}
+        hasValue={select.hasValue}
         setValue={select.setValue}
         inputValue={select.inputValue}
         inputRef={select.inputRef}
@@ -105,13 +106,10 @@ const Container: Component<ContainerProps> = (props) => {
 type ControlProps = Omit<CommonProps, "class"> &
   Pick<
     SelectReturn,
-    "value" | "setValue" | "multiple" | "inputValue" | "inputRef"
+    "value" | "hasValue" | "setValue" | "multiple" | "inputValue" | "inputRef"
   >;
 
 const Control = (props: ControlProps) => {
-  const hasValue = () =>
-    props.multiple ? !!props.value.length : !!props.value;
-
   const removeValue = (index: number) => {
     const value = props.value;
     props.setValue([...value.slice(0, index), ...value.slice(index + 1)]);
@@ -121,9 +119,9 @@ const Control = (props: ControlProps) => {
     <div
       class="solid-select-control"
       data-multiple={props.multiple}
-      data-has-value={hasValue()}
+      data-has-value={props.hasValue}
     >
-      <Show when={!hasValue() && !props.inputValue}>
+      <Show when={!props.hasValue && !props.inputValue}>
         <Placeholder>{props.placeholder}</Placeholder>
       </Show>
       <Show when={props.value && !props.multiple && !props.inputValue}>
