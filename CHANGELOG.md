@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- Support passing `id` prop to the `Select` control. The id will be set on the
+  contained `input` allowing the control to be associated with a corresponding
+  `label` for example.
+
 ## [0.3.0] - 2022-02-07
 
 ### Added

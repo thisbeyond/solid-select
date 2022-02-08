@@ -20,6 +20,7 @@ interface CommonProps {
     type: "option" | "value"
   ) => string | undefined;
   placeholder?: string;
+  id?: string;
   name?: string;
   class?: string;
   autofocus?: boolean;
@@ -57,6 +58,7 @@ const Select = (props: SelectProps) => {
       <Control
         format={local.format}
         placeholder={local.placeholder}
+        id={local.id}
         name={local.name}
         autofocus={local.autofocus}
         readonly={local.readonly}
@@ -138,6 +140,7 @@ const Control = (props: ControlProps) => {
       </Show>
       <Input
         ref={props.inputRef}
+        id={props.id}
         name={props.name}
         autofocus={props.autofocus}
         readonly={props.readonly}
@@ -175,13 +178,14 @@ const MultiValue: Component<{ onRemove: () => void }> = (props) => {
 
 type InputProps = { ref: SelectReturn["inputRef"] } & Pick<
   CommonProps,
-  "name" | "autofocus" | "readonly"
+  "id" | "name" | "autofocus" | "readonly"
 >;
 
 const Input: Component<InputProps> = (props) => {
   return (
     <input
       ref={props.ref}
+      id={props.id}
       name={props.name}
       class="solid-select-input"
       type="text"
