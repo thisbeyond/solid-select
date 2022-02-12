@@ -1,5 +1,18 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+
+- Fix remove value buttons being activated on form submission. The [W3C HTML5
+  Button](https://www.w3.org/TR/2011/WD-html5-20110525/the-button-element.html)
+  spec defines the default type of a button to be a submit button. This means
+  that placing a multi select in a form could cause a remove value button to be
+  activated when a form submission was requested by pressing the 'enter' key.
+  The visible effect of this was that pressing enter in the form would remove
+  multi values one by one until they were all gone. Setting the type of the
+  remove button explicity to `type="button"` avoids this behaviour.
+
 ## [0.4.0] - 2022-02-08
 
 ### Added
