@@ -1,5 +1,22 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- Support disabling individual options in the list. When an option is disabled
+it is still displayed in the option list (differentiated with some styling), but
+it cannot be picked. By default, no options are ever considered disabled. Pass a
+custom `isOptionDisabled` function to either `createSelect` or the `Select`
+component to customise how an option is determined as disabled or not:
+
+```jsx
+<Select
+  options={["apple", "pear", "kiwi"]}
+  isOptionDisabled={option => option === "pear"}
+/>
+```
+
 ## [0.4.1] - 2022-02-12
 
 ### Fixed

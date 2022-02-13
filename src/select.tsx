@@ -44,6 +44,7 @@ const Select = (props: SelectProps) => {
     [
       "options",
       "optionToValue",
+      "isOptionDisabled",
       "initialValue",
       "multiple",
       "onInput",
@@ -76,6 +77,7 @@ const Select = (props: SelectProps) => {
       >
         {(option: OptionType) => (
           <Option
+            isDisabled={select.isOptionDisabled(option)}
             isFocused={select.isOptionFocused(option)}
             pickOption={[select.pickOption, option]}
           >
@@ -225,6 +227,7 @@ const List = (props: ListProps) => {
 };
 
 type OptionProps = {
+  isDisabled: boolean;
   isFocused: boolean;
   pickOption: [SelectReturn["pickOption"], OptionType];
 };
@@ -232,6 +235,7 @@ type OptionProps = {
 const Option: Component<OptionProps> = (props) => {
   return (
     <div
+      data-disabled={props.isDisabled}
       data-focused={props.isFocused}
       class="solid-select-option"
       onClick={props.pickOption}

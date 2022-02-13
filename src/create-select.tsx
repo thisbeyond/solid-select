@@ -18,6 +18,7 @@ interface CreateSelectProps {
   initialValue?: Value;
   multiple?: boolean;
   optionToValue?: (option: Option) => SingleValue;
+  isOptionDisabled?: (option: Option) => boolean;
   onChange?: (value: Value) => void;
   onInput?: (inputValue: string) => void;
   onFocus?: (event: FocusEvent) => void;
@@ -29,6 +30,7 @@ const createSelect = (props: CreateSelectProps) => {
     {
       multiple: false,
       optionToValue: (option: Option): SingleValue => option,
+      isOptionDisabled: (option: Option) => false,
     },
     props
   );
@@ -89,6 +91,8 @@ const createSelect = (props: CreateSelectProps) => {
   const optionsCount = () => options().length;
 
   const pickOption = (option: Option) => {
+    if (config.isOptionDisabled(option)) return;
+
     const value = config.optionToValue(option);
     if (config.multiple) {
       setValue([..._value(), value]);
@@ -205,7 +209,10 @@ const createSelect = (props: CreateSelectProps) => {
     });
 
     element.addEventListener("click", (event) => {
-      if (!refs.listRef || event.target !== refs.listRef) {
+      if (
+        !refs.listRef ||
+        !refs.listRef.contains(event.target as HTMLElement)
+      ) {
         toggle();
       }
     });
@@ -329,6 +336,7 @@ const createSelect = (props: CreateSelectProps) => {
     multiple: config.multiple,
     pickOption,
     isOptionFocused,
+    isOptionDisabled: config.isOptionDisabled,
     containerRef,
     inputRef,
     listRef,

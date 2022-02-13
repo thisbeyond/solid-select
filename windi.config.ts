@@ -20,6 +20,11 @@ export default defineConfig({
           return `.${className}[data-focused="true"]`;
         });
       });
+      addVariant("data-disabled", ({ modifySelectors }) => {
+        return modifySelectors(({ className }) => {
+          return `.${className}[data-disabled="true"]`;
+        });
+      });
       addVariant("data-has-value", ({ modifySelectors }) => {
         return modifySelectors(({ className }) => {
           return `.${className}[data-has-value="true"]`;
@@ -52,6 +57,7 @@ export default defineConfig({
       "whitespace-nowrap rounded-sm mt-1 p-2 z-1",
     "solid-select-option":
       "px-4 py-2 cursor-default select-none " +
-      "hover:bg-gray-200 data-focused:bg-gray-100",
+      "hover:bg-gray-200 data-focused:bg-gray-100 " +
+      "data-disabled:(pointer-events-none text-gray-400)",
   },
 });
