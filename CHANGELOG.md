@@ -4,18 +4,57 @@
 
 ### Added
 
-- Support disabling individual options in the list. When an option is disabled
-it is still displayed in the option list (differentiated with some styling), but
-it cannot be picked. By default, no options are ever considered disabled. Pass a
-custom `isOptionDisabled` function to either `createSelect` or the `Select`
-component to customise how an option is determined as disabled or not:
+- Provide a new helper, `createOptions`, to configure the `Select` component
+  with (optional) filtering, dynamic creation of options from input value and
+  setting disabled options based on value:
 
-```jsx
-<Select
-  options={["apple", "pear", "kiwi"]}
-  isOptionDisabled={option => option === "pear"}
-/>
-```
+  ```jsx
+  <Select
+    {...createOptions(["apple", "banana", "pear", "pineapple", "kiwi"], {
+      filterable: true,
+      createable: true,
+      disable: (value) => value === "pear",
+    })}
+  />
+  ```
+
+  Note: All of the functionality provided by the helper can be implemented
+  and/or customised manually. The helper only configures the props to pass to
+  the `Select` component as a convenience.
+
+- Support disabling individual options in the list. When an option is disabled
+  it is still displayed in the option list (differentiated with some styling),
+  but it cannot be picked. By default, no options are ever considered disabled.
+  Pass a custom `isOptionDisabled` function to either `createSelect` or the
+  `Select` component to customise how an option is determined as disabled or
+  not:
+
+  ```jsx
+  <Select
+    options={["apple", "pear", "kiwi"]}
+    isOptionDisabled={option => option === "pear"}
+  />
+  ```
+
+### Changed
+
+- **Breaking Change** Replace `createFilterable` with more generic
+  `createOptions` helper. For the most part this should just be a matter of
+  updating imports and name:
+
+  ```jsx
+  <Select {...createFilterable(["apple", "banana", "pear"])}/>
+  ```
+
+  becomes
+
+  ```jsx
+  <Select {...createOptions(["apple", "banana", "pear"])}/>
+  ```
+
+  As part of this change, `<mark>` tags are now used for highlighting instead of
+  `<b>` tags (as more appropriate). Default styling also updated to only
+  underline matching text for less visual noise.
 
 ## [0.4.1] - 2022-02-12
 

@@ -35,6 +35,11 @@ export default defineConfig({
           return `.${className}[data-multiple="true"]`;
         });
       });
+      addVariant("mark", ({ modifySelectors }) => {
+        return modifySelectors(({ className }) => {
+          return `.${className} > mark`;
+        });
+      });
     }),
   ],
   shortcuts: {
@@ -58,6 +63,7 @@ export default defineConfig({
     "solid-select-option":
       "px-4 py-2 cursor-default select-none " +
       "hover:bg-gray-200 data-focused:bg-gray-100 " +
-      "data-disabled:(pointer-events-none text-gray-400)",
+      "data-disabled:(pointer-events-none text-gray-400) " +
+      "mark:(underline text-[unset] bg-[unset])",
   },
 });

@@ -1,6 +1,6 @@
 import "virtual:windi.css";
 export { createSelect } from "./create-select";
-export { createFilterable } from "./create-filterable";
+export { createOptions } from "./create-options";
 export {
   Select,
   Container,
