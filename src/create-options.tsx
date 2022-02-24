@@ -1,6 +1,7 @@
 import { JSXElement } from "solid-js";
 
 import { Value } from "./create-select";
+import { fuzzyHighlight, fuzzySort } from "./fuzzy";
 
 type Values = Value[];
 
@@ -44,8 +45,13 @@ const createOptions = (
       };
     });
 
-    if (config.filterable) {
-      createdOptions = filterOptions(inputValue, createdOptions);
+    if (config.filterable && inputValue) {
+      createdOptions = fuzzySort(inputValue, createdOptions, "label").map(
+        (result) => ({
+          ...result.item,
+          label: fuzzyHighlight(result),
+        })
+      );
     }
 
     if (config.createable !== undefined) {
@@ -97,42 +103,5 @@ const areEqualIgnoringCase = (firstString: string, secondString: string) =>
   firstString.localeCompare(secondString, undefined, {
     sensitivity: "base",
   }) === 0;
-
-const splitOn = (sliceable: string, ...indices: number[]) =>
-  [0, ...indices].map((index, indexPosition, indices) =>
-    sliceable.slice(index, indices[indexPosition + 1])
-  );
-
-const filterOptions = (inputValue: string, options: Option[]) => {
-  if (!inputValue) {
-    return options;
-  }
-
-  const length = inputValue.length;
-  let filteredOptions: Option[] = [];
-
-  for (const option of options) {
-    if (typeof option.label === "string") {
-      const index = option.label.indexOf(inputValue);
-      if (index > -1) {
-        const parts = splitOn(option.label, index, index + length);
-        const label = (
-          <>
-            {parts[0]}
-            <mark>{parts[1]}</mark>
-            {parts[2]}
-          </>
-        );
-
-        filteredOptions.push({
-          ...option,
-          label,
-        });
-      }
-    }
-  }
-
-  return filteredOptions;
-};
 
 export { createOptions };

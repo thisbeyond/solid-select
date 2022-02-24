@@ -1,5 +1,28 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- Add builtin fuzzy search and sort algorithm. Use as default for filtering in
+  `createOptions`. This replaces the previous filtering logic that could only
+  match exact segments and was case sensitive. The new algorithm is case
+  insensitive, can match multiple partials and prioritises start of string /
+  start of word / consecutive matches. When sorting, if two matches have the
+  same score then their original array index is used as the tiebreaker.
+
+  ```js
+  sorted = fuzzySort("spp", ["pineapple", "rose apple",  "star apple"])
+  // [{ target: "star apple", ... }, { target: "rose apple", ... }]
+  ```
+
+  A helper to highlight matches is also included:
+
+  ```jsx
+  highlighted = fuzzyHighlight(sorted[0])
+  // <><mark>s</mark>tar a<mark>pp</mark>le</>
+  ```
+
 ## [0.5.0] - 2022-02-20
 
 ### Added
