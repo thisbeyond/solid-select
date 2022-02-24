@@ -26,6 +26,7 @@
     },
     "./style.css": "./dist/esm/style.css"
   },
+  "sideEffects": false,
   "scripts": {
     "build": "rollup -c",
     "prepublishOnly": "npm run build",

@@ -23,6 +23,10 @@
   // <><mark>s</mark>tar a<mark>pp</mark>le</>
   ```
 
+### Changed
+
+- Mark package as side effect free.
+
 ## [0.5.0] - 2022-02-20
 
 ### Added
