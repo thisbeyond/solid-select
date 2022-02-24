@@ -46,9 +46,10 @@ See more examples at https://solid-select.com
 - [x] A high level `Select` component that can be configured with either a
   static or dynamic list of options.
 - [x] Support for single value selection or multiple value selection.
-- [x] `createFilterable` helper for filtering options based on input value
-  (complete with match highlighting). Works with lists of plain strings or can
-  be passed a 'key' to filter against lists of objects.
+- [x] `createOptions` helper for configuring filterable options based on input
+  value (complete with match highlighting). Works with lists of plain strings or
+  can be passed a 'key' to filter against lists of objects. Can also be used to
+  configure creating new options on the fly.
 - [x] Opt-in sensible default styling. Customise easily or style from scratch.
 - [x] Composable building blocks to create your own control.
 - [x] Lower level `createSelect` primitive if you just want the core logic.
