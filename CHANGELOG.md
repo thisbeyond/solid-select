@@ -9,6 +9,10 @@
   permitted. The component is visually styled based on the `data-disabled`
   attribute.
 
+  ```jsx
+  <Select disabled options={["one", "two", "three"]} />
+  ```
+
 ### Fixed
 
 - Ensure control is focused even when clicking on extremities of container.
