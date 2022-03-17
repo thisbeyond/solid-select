@@ -43,11 +43,12 @@ export default defineConfig({
     }),
   ],
   shortcuts: {
-    "solid-select-container": "relative",
+    "solid-select-container": "relative data-disabled:(pointer-events-none)",
     "solid-select-control":
       "py-1 px-2 border border-gray-200 rounded leading-normal " +
       "focus-within:(outline-dotted-gray-300) grid grid-cols-1 " +
-      "data-multiple:data-has-value:(flex flex-wrap items-stretch gap-1)",
+      "data-multiple:data-has-value:(flex flex-wrap items-stretch gap-1) " +
+      "data-disabled:(border-gray-300 bg-gray-100)",
     "solid-select-placeholder": "col-start-1 row-start-1 text-gray-400",
     "solid-select-single-value": "col-start-1 row-start-1",
     "solid-select-multi-value":

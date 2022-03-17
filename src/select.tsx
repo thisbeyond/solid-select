@@ -47,6 +47,7 @@ const Select = (props: SelectProps) => {
       "isOptionDisabled",
       "initialValue",
       "multiple",
+      "disabled",
       "onInput",
       "onChange",
       "onBlur",
@@ -55,7 +56,11 @@ const Select = (props: SelectProps) => {
   const select = createSelect(selectProps);
 
   return (
-    <Container class={local.class} ref={select.containerRef}>
+    <Container
+      class={local.class}
+      ref={select.containerRef}
+      disabled={select.disabled}
+    >
       <Control
         format={local.format}
         placeholder={local.placeholder}
@@ -63,6 +68,7 @@ const Select = (props: SelectProps) => {
         name={local.name}
         autofocus={local.autofocus}
         readonly={local.readonly}
+        disabled={select.disabled}
         value={select.value}
         hasValue={select.hasValue}
         setValue={select.setValue}
@@ -89,10 +95,10 @@ const Select = (props: SelectProps) => {
   );
 };
 
-type ContainerProps = { ref: SelectReturn["containerRef"] } & Pick<
-  CommonProps,
-  "class"
->;
+type ContainerProps = {
+  ref: SelectReturn["containerRef"];
+  disabled: SelectReturn["disabled"];
+} & Pick<CommonProps, "class">;
 
 const Container: Component<ContainerProps> = (props) => {
   return (
@@ -101,6 +107,7 @@ const Container: Component<ContainerProps> = (props) => {
         props.class !== undefined ? props.class : ""
       }`}
       ref={props.ref}
+      data-disabled={props.disabled}
     >
       {props.children}
     </div>
@@ -110,7 +117,13 @@ const Container: Component<ContainerProps> = (props) => {
 type ControlProps = Omit<CommonProps, "class"> &
   Pick<
     SelectReturn,
-    "value" | "hasValue" | "setValue" | "multiple" | "inputValue" | "inputRef"
+    | "value"
+    | "hasValue"
+    | "setValue"
+    | "multiple"
+    | "disabled"
+    | "inputValue"
+    | "inputRef"
   >;
 
 const Control = (props: ControlProps) => {
@@ -124,6 +137,7 @@ const Control = (props: ControlProps) => {
       class="solid-select-control"
       data-multiple={props.multiple}
       data-has-value={props.hasValue}
+      data-disabled={props.disabled}
     >
       <Show when={!props.hasValue && !props.inputValue}>
         <Placeholder>{props.placeholder}</Placeholder>
@@ -145,6 +159,7 @@ const Control = (props: ControlProps) => {
         id={props.id}
         name={props.name}
         autofocus={props.autofocus}
+        disabled={props.disabled}
         readonly={props.readonly}
       />
     </div>
@@ -179,10 +194,10 @@ const MultiValue: Component<{ onRemove: () => void }> = (props) => {
   );
 };
 
-type InputProps = { ref: SelectReturn["inputRef"] } & Pick<
-  CommonProps,
-  "id" | "name" | "autofocus" | "readonly"
->;
+type InputProps = {
+  ref: SelectReturn["inputRef"];
+  disabled: SelectReturn["disabled"];
+} & Pick<CommonProps, "id" | "name" | "autofocus" | "readonly">;
 
 const Input: Component<InputProps> = (props) => {
   return (
@@ -197,6 +212,7 @@ const Input: Component<InputProps> = (props) => {
       autocapitalize="none"
       autofocus={props.autofocus}
       readonly={props.readonly}
+      disabled={props.disabled}
       size={1}
       onKeyDown={(event: KeyboardEvent) => {
         if (event.key === "Escape") {

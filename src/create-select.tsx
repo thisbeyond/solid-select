@@ -17,6 +17,7 @@ interface CreateSelectProps {
   options: Option[] | ((inputValue: string) => Option[]);
   initialValue?: Value;
   multiple?: boolean;
+  disabled?: boolean;
   optionToValue?: (option: Option) => SingleValue;
   isOptionDisabled?: (option: Option) => boolean;
   onChange?: (value: Value) => void;
@@ -29,6 +30,7 @@ const createSelect = (props: CreateSelectProps) => {
   const config = mergeProps(
     {
       multiple: false,
+      disabled: false,
       optionToValue: (option: Option): SingleValue => option,
       isOptionDisabled: (option: Option) => false,
     },
@@ -112,6 +114,8 @@ const createSelect = (props: CreateSelectProps) => {
   const close = () => setIsOpen(false);
   const toggle = () => setIsOpen(!isOpen());
 
+  const isDisabled = () => config.disabled;
+
   const [focusedOptionIndex, setFocusedOptionIndex] = createSignal(-1);
 
   const focusedOption = () => options()[focusedOptionIndex()];
@@ -143,6 +147,14 @@ const createSelect = (props: CreateSelectProps) => {
       },
       { defer: true }
     )
+  );
+
+  createEffect(
+    on(isDisabled, (isDisabled) => {
+      if (isDisabled && isOpen()) {
+        close();
+      }
+    })
   );
 
   createEffect(
@@ -334,6 +346,9 @@ const createSelect = (props: CreateSelectProps) => {
       return isOpen();
     },
     multiple: config.multiple,
+    get disabled() {
+      return isDisabled();
+    },
     pickOption,
     isOptionFocused,
     isOptionDisabled: config.isOptionDisabled,

@@ -1,5 +1,14 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- Support disabling select by passing boolean value for `disabled` prop (both in
+  `createSelect` or the `Select` component). When disabled no interaction is
+  permitted. The component is visually styled based on the `data-disabled`
+  attribute.
+
 ## [0.6.0] - 2022-02-24
 
 ### Added
