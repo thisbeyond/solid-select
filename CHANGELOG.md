@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [0.7.0] - 2022-03-17
 
 ### Added
 
@@ -213,8 +213,9 @@ Initial release featuring core create select logic, accompanying component
 blocks and a composed component for convenience.
 
 <!-- prettier-ignore -->
-[Unreleased]: https://github.com/thisbeyond/solid-select/compare/0.6.0...HEAD
+[Unreleased]: https://github.com/thisbeyond/solid-select/compare/0.7.0...HEAD
 
+[0.7.0]: https://github.com/thisbeyond/solid-select/compare/0.6.0...0.7.0
 [0.6.0]: https://github.com/thisbeyond/solid-select/compare/0.5.0...0.6.0
 [0.5.0]: https://github.com/thisbeyond/solid-select/compare/0.4.1...0.5.0
 [0.4.1]: https://github.com/thisbeyond/solid-select/compare/0.4.0...0.4.1
