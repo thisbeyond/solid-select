@@ -9,6 +9,10 @@
   permitted. The component is visually styled based on the `data-disabled`
   attribute.
 
+### Fixed
+
+- Ensure control is focused even when clicking on extremities of container.
+
 ## [0.6.0] - 2022-02-24
 
 ### Added

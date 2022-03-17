@@ -225,6 +225,9 @@ const createSelect = (props: CreateSelectProps) => {
         !refs.listRef ||
         !refs.listRef.contains(event.target as HTMLElement)
       ) {
+        if (refs.inputRef) {
+          refs.inputRef.focus();
+        }
         toggle();
       }
     });
