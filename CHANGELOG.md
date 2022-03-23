@@ -1,5 +1,15 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+
+- Fix import error (`Failed to resolve import "virtual:windi.css"`) when using
+  'solid' export source in another SolidJS project that does not use WindiCSS.
+  Strip the relevant import line post build as it is not needed in the
+  distributed package (the styles are already compiled and available via `import
+  "@thisbeyond/solid-select/style.css";`).
+
 ## [0.7.0] - 2022-03-17
 
 ### Added
