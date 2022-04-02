@@ -1,5 +1,14 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- Support displaying a loading indicator in the options lists - useful when
+  fetching options asynchronously. Pass the `loading` prop to the `Select`
+  component to control whether to display the loading indicator or the list of
+  options. Customise the loading message with the `loadingPlaceholder` prop.
+
 ## [0.7.1] - 2022-03-23
 
 ### Fixed

@@ -25,6 +25,8 @@ interface CommonProps {
   class?: string;
   autofocus?: boolean;
   readonly?: boolean;
+  loading?: boolean;
+  loadingPlaceholder?: string;
 }
 
 type SelectReturn = ReturnType<typeof createSelect>;
@@ -38,6 +40,8 @@ const Select = (props: SelectProps) => {
         format: ((data, type) => data) as CommonProps["format"],
         placeholder: "Select...",
         readonly: typeof props.options !== "function",
+        loading: false,
+        loadingPlaceholder: "Loading...",
       },
       props
     ),
@@ -80,6 +84,8 @@ const Select = (props: SelectProps) => {
         ref={select.listRef}
         isOpen={select.isOpen}
         options={select.options}
+        loading={local.loading}
+        loadingPlaceholder={local.loadingPlaceholder}
       >
         {(option: OptionType) => (
           <Option
@@ -228,15 +234,30 @@ const Input: Component<InputProps> = (props) => {
 type ListProps = {
   ref: SelectReturn["listRef"];
   children: (option: OptionType) => JSXElement;
-} & Pick<SelectReturn, "isOpen" | "options">;
+} & Pick<SelectReturn, "isOpen" | "options"> &
+  Pick<CommonProps, "loading" | "loadingPlaceholder">;
 
 const List = (props: ListProps) => {
   return (
     <Show when={props.isOpen}>
       <div ref={props.ref} class="solid-select-list">
-        <For each={props.options} fallback={"No options"}>
-          {props.children}
-        </For>
+        <Show
+          when={!props.loading}
+          fallback={
+            <div class="solid-select-list-placeholder">
+              {props.loadingPlaceholder}
+            </div>
+          }
+        >
+          <For
+            each={props.options}
+            fallback={
+              <div class="solid-select-list-placeholder">No options</div>
+            }
+          >
+            {props.children}
+          </For>
+        </Show>
       </div>
     </Show>
   );
