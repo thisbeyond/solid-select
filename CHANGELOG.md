@@ -10,8 +10,8 @@
   ```jsx
   const fetchData = async (inputValue) => { return await ... }
 
-  const selectProps = createAsyncOptions(fetchData);
-  return <Select {...selectProps} />;
+  const props = createAsyncOptions(fetchData);
+  return <Select {...props} />;
   ```
 
 - Support displaying a loading indicator in the options lists - useful when
@@ -82,13 +82,15 @@
   setting disabled options based on value:
 
   ```jsx
-  <Select
-    {...createOptions(["apple", "banana", "pear", "pineapple", "kiwi"], {
+  const props = createOptions(
+    ["apple", "banana", "pear", "pineapple", "kiwi"],
+    {
       filterable: true,
       createable: true,
       disable: (value) => value === "pear",
-    })}
-  />
+    }
+  );
+  <Select {...props} />;
   ```
 
   Note: All of the functionality provided by the helper can be implemented
@@ -116,13 +118,15 @@
   updating imports and name:
 
   ```jsx
-  <Select {...createFilterable(["apple", "banana", "pear"])}/>
+  const props = createFilterable(["apple", "banana", "pear"])
+  <Select {...props} />
   ```
 
   becomes
 
   ```jsx
-  <Select {...createOptions(["apple", "banana", "pear"])}/>
+  const props = createOptions(["apple", "banana", "pear"])
+  <Select {...props} />
   ```
 
   As part of this change, `<mark>` tags are now used for highlighting instead of
@@ -207,7 +211,8 @@
   plain strings (or objects by passing a 'key' to the configuration):
 
   ```jsx
-  <Select {...createFilterable(["one", "two", "three"])} />
+  const props = createFilterable(["one", "two", "three"])
+  <Select {...props} />
   ```
 
 - Make Select component read only by default (when a static list of options is
