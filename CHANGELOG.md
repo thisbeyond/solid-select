@@ -4,6 +4,16 @@
 
 ### Added
 
+- Provide a helper, `createAsyncOptions` for loading options asynchronously
+  based on input value. Uses Solid's `createResource` under the hood.
+
+  ```jsx
+  const fetchData = async (inputValue) => { return await ... }
+
+  const selectProps = createAsyncOptions(fetchData);
+  return <Select {...selectProps} />;
+  ```
+
 - Support displaying a loading indicator in the options lists - useful when
   fetching options asynchronously. Pass the `loading` prop to the `Select`
   component to control whether to display the loading indicator or the list of
