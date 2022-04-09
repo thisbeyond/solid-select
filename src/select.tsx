@@ -5,6 +5,7 @@ import {
   mergeProps,
   Component,
   JSXElement,
+  createEffect,
 } from "solid-js";
 
 import {
@@ -270,8 +271,16 @@ type OptionProps = {
 };
 
 const Option: Component<OptionProps> = (props) => {
+  const scrollIntoViewOnFocus = (element) => {
+    createEffect(() => {
+      if (props.isFocused) {
+        element.scrollIntoView({ block: "nearest" });
+      }
+    });
+  };
   return (
     <div
+      ref={scrollIntoViewOnFocus}
       data-disabled={props.isDisabled}
       data-focused={props.isFocused}
       class="solid-select-option"

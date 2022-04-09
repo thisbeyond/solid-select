@@ -1,5 +1,12 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- Auto scroll focused options into view. As part of this, also set sensible
+  default styles for overflow and maximum height of `solid-select-list`.
+
 ## [0.8.0] - 2022-04-02
 
 ### Added
