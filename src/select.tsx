@@ -256,7 +256,9 @@ const List = (props: ListProps) => {
           <For
             each={props.options}
             fallback={
-              <div class="solid-select-list-placeholder">{props.emptyPlaceholder}</div>
+              <div class="solid-select-list-placeholder">
+                {props.emptyPlaceholder}
+              </div>
             }
           >
             {props.children}
