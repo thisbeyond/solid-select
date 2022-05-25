@@ -28,6 +28,7 @@ interface CommonProps {
   readonly?: boolean;
   loading?: boolean;
   loadingPlaceholder?: string;
+  emptyPlaceholder?: string;
 }
 
 type SelectReturn = ReturnType<typeof createSelect>;
@@ -43,6 +44,7 @@ const Select = (props: SelectProps) => {
         readonly: typeof props.options !== "function",
         loading: false,
         loadingPlaceholder: "Loading...",
+        emptyPlaceholder: "No options",
       },
       props
     ),
@@ -87,6 +89,7 @@ const Select = (props: SelectProps) => {
         options={select.options}
         loading={local.loading}
         loadingPlaceholder={local.loadingPlaceholder}
+        emptyPlaceholder={local.emptyPlaceholder}
       >
         {(option: OptionType) => (
           <Option
@@ -236,7 +239,7 @@ type ListProps = {
   ref: SelectReturn["listRef"];
   children: (option: OptionType) => JSXElement;
 } & Pick<SelectReturn, "isOpen" | "options"> &
-  Pick<CommonProps, "loading" | "loadingPlaceholder">;
+  Pick<CommonProps, "loading" | "loadingPlaceholder" | "emptyPlaceholder">;
 
 const List = (props: ListProps) => {
   return (
@@ -253,7 +256,7 @@ const List = (props: ListProps) => {
           <For
             each={props.options}
             fallback={
-              <div class="solid-select-list-placeholder">No options</div>
+              <div class="solid-select-list-placeholder">{props.emptyPlaceholder}</div>
             }
           >
             {props.children}
