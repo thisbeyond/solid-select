@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- Accept `emptyPlaceholder` property on `Select` to control the message
+  displayed when there are no options available. Defaults to `No options`.
+  Thanks to [@raskyer](https://github.com/raskyer) for this contribution.
+
 ## [0.9.0] - 2022-04-09
 
 ### Added
