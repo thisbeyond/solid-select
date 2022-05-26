@@ -8,6 +8,21 @@
   displayed when there are no options available. Defaults to `No options`.
   Thanks to [@raskyer](https://github.com/raskyer) for this contribution.
 
+- The `initialValue` prop of the `Select` component can now be a Signal in order
+  to support reactively re-setting the initial value of the component. This is
+  useful for providing 'reset form' functionality for example.
+
+  ```jsx
+  const [initialValue, setInitialValue] = createSignal(null, { equals: false });
+
+  <Select
+    initialValue={initialValue}
+    options={["apple", "banana", "pear", "pineapple", "kiwi"]}
+  />
+
+  <button onClick={() => setInitialValue(null)}>Reset</button>
+  ```
+
 ## [0.9.0] - 2022-04-09
 
 ### Added

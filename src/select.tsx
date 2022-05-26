@@ -6,6 +6,7 @@ import {
   Component,
   JSXElement,
   createEffect,
+  on,
 } from "solid-js";
 
 import {
@@ -52,7 +53,6 @@ const Select = (props: SelectProps) => {
       "options",
       "optionToValue",
       "isOptionDisabled",
-      "initialValue",
       "multiple",
       "disabled",
       "onInput",
@@ -61,6 +61,14 @@ const Select = (props: SelectProps) => {
     ]
   );
   const select = createSelect(selectProps);
+
+  if (local.initialValue !== undefined) {
+    if (typeof local.initialValue === "function") {
+      createEffect(on(local.initialValue, (value) => select.setValue(value)));
+    } else {
+      select.setValue(local.initialValue);
+    }
+  }
 
   return (
     <Container
