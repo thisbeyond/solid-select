@@ -1,5 +1,27 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+
+- Change `initialValue` behaviour on the `Select` component to react to signals
+  in a more intuitive way. Rather than pass the raw signal in, use the resolved
+  signal in a tracking context to gain reactivity for the `initialValue`. This
+  is the recommended approach to passing Signals in Solid (and is also more
+  similar to plain values).
+
+  ```jsx
+  <Select initialValue={initialValue}/>
+  ```
+
+  becomes
+
+  ```jsx
+  <Select initialValue={initialValue()}/>
+  ```
+
+  Thanks to [rturnq](https://github.com/rturnq) for the tip!
+
 ## [0.10.0] - 2022-05-26
 
 ### Added
