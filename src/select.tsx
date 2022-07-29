@@ -63,14 +63,12 @@ const Select = (props: SelectProps) => {
   );
   const select = createSelect(selectProps);
 
-  if (local.initialValue !== undefined) {
-    createEffect(
-      on(
-        () => local.initialValue,
-        (value) => select.setValue(value)
-      )
-    );
-  }
+  createEffect(
+    on(
+      () => local.initialValue,
+      (value) => value !== undefined && select.setValue(value)
+    )
+  );
 
   return (
     <Container
