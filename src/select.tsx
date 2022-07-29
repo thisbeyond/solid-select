@@ -58,6 +58,7 @@ const Select = (props: SelectProps) => {
       "onInput",
       "onChange",
       "onBlur",
+      "onFocus"
     ]
   );
   const select = createSelect(selectProps);
