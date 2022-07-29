@@ -1,6 +1,6 @@
 {
   "name": "@thisbeyond/solid-select",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "description": "The Select component for Solid.",
   "info": "A flexible, reactive Select component and core built for use with SolidJS. Supports single or multiple values; static, reactive or dynamic options (including via async fetch); builtin filtering; custom styling and more!",
   "homepage": "https://solid-select.com",
