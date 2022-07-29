@@ -1,5 +1,18 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+
+- React to changing `initialValue` even if initially `undefined` on `Select`
+  component.
+
+### Fixed
+
+- Fix `onFocus` prop being ignored by `Select` component. It now passes it
+  through to the core and is called correctly when the select is focused. Thanks
+  to [kapilpipaliya](https://github.com/kapilpipaliya) for the fix.
+
 ## [0.11.0] - 2022-05-26
 
 ### Changed
