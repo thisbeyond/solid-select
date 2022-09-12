@@ -1,5 +1,12 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+
+- **Breaking Change** Support Solid JS 1.5 as the minimum compatible version and
+  update relevant typings.
+
 ## [0.12.0] - 2022-07-29
 
 ### Changed
