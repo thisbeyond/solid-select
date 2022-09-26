@@ -40,7 +40,7 @@ const createSelect = (props: CreateSelectProps) => {
   const parseValue = (value: Value) => {
     if (config.multiple && Array.isArray(value)) {
       return value;
-    } else if (!config.multiple && !Array.isArray(value)) {
+    } else if (!config.multiple) {
       return value !== null ? [value] : [];
     } else {
       throw new Error(
