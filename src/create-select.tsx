@@ -167,6 +167,7 @@ const createSelect = (props: CreateSelectProps) => {
         } else {
           if (focusedOptionIndex() > -1) setFocusedOptionIndex(-1);
           clearInputValue();
+          hideInput();
         }
       },
       { defer: true }
@@ -203,6 +204,7 @@ const createSelect = (props: CreateSelectProps) => {
     });
 
     element.addEventListener("focusout", (event: FocusEvent) => {
+      hideInput();
       const target = event.relatedTarget as HTMLElement;
       for (const relatedElement of Object.values(refs)) {
         if (relatedElement?.contains(target)) {
