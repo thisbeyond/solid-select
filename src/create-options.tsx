@@ -1,24 +1,24 @@
 import { JSXElement } from "solid-js";
 
-import { Value } from "./create-select";
+import { RawValue } from "./create-select";
 import { fuzzyHighlight, fuzzySort } from "./fuzzy";
 
-type Values = Value[];
+export type Values = RawValue[];
 
-interface Option {
+export interface Option {
   label: JSXElement;
-  value: Value;
+  value: RawValue;
   disabled: boolean;
 }
 
-interface CreateOptionsConfig {
+export interface CreateOptionsConfig {
   key?: string;
   filterable?: boolean;
-  createable?: boolean | ((inputValue: string) => Value);
-  disable?: (value: Value) => boolean;
+  createable?: boolean | ((inputValue: string) => RawValue);
+  disable?: (value: RawValue) => boolean;
 }
 
-const createOptions = (
+export const createOptions = (
   values: Values | ((inputValue: string) => Values),
   userConfig?: CreateOptionsConfig
 ) => {
@@ -30,7 +30,7 @@ const createOptions = (
     userConfig || {}
   );
 
-  const getLabel = (value: Value) =>
+  const getLabel = (value: RawValue) =>
     config?.key !== undefined ? value[config.key] : value;
 
   const options = (inputValue: string) => {
@@ -61,7 +61,7 @@ const createOptions = (
       );
 
       if (trimmedValue && !exists) {
-        let value: Value;
+        let value: RawValue;
         if (typeof config.createable === "function") {
           value = config.createable(trimmedValue);
         } else {
@@ -86,7 +86,7 @@ const createOptions = (
 
   const optionToValue = (option: Option) => option.value;
 
-  const format = (item: Option | Value, type: "option" | "value") =>
+  const format = (item: Option | RawValue, type: "option" | "value") =>
     type === "option" ? item.label : getLabel(item);
 
   const isOptionDisabled = (option: Option) => option.disabled;
@@ -103,5 +103,3 @@ const areEqualIgnoringCase = (firstString: string, secondString: string) =>
   firstString.localeCompare(secondString, undefined, {
     sensitivity: "base",
   }) === 0;
-
-export { createOptions };

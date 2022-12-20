@@ -7,37 +7,37 @@ import {
   on,
 } from "solid-js";
 
-type Option = any;
+export type RawOption = any;
 
-type SingleValue = any;
+export type RawSingleValue = any;
 
-type Value = SingleValue | SingleValue[];
+export type RawValue = RawSingleValue | RawSingleValue[];
 
-interface CreateSelectProps {
-  options: Option[] | ((inputValue: string) => Option[]);
-  initialValue?: Value;
+export interface CreateSelectProps {
+  options: RawOption[] | ((inputValue: string) => RawOption[]);
+  initialValue?: RawValue;
   multiple?: boolean;
   disabled?: boolean;
-  optionToValue?: (option: Option) => SingleValue;
-  isOptionDisabled?: (option: Option) => boolean;
-  onChange?: (value: Value) => void;
+  optionToValue?: (option: RawOption) => RawSingleValue;
+  isOptionDisabled?: (option: RawOption) => boolean;
+  onChange?: (value: RawValue) => void;
   onInput?: (inputValue: string) => void;
   onFocus?: (event: FocusEvent) => void;
   onBlur?: (event: FocusEvent) => void;
 }
 
-const createSelect = (props: CreateSelectProps) => {
+export const createSelect = (props: CreateSelectProps) => {
   const config = mergeProps(
     {
       multiple: false,
       disabled: false,
-      optionToValue: (option: Option): SingleValue => option,
-      isOptionDisabled: (option: Option) => false,
+      optionToValue: (option: RawOption): SingleValue => option,
+      isOptionDisabled: (option: RawOption) => false,
     },
     props
   );
 
-  const parseValue = (value: Value) => {
+  const parseValue = (value: RawValue) => {
     if (config.multiple && Array.isArray(value)) {
       return value;
     } else if (!config.multiple && !Array.isArray(value)) {
@@ -56,7 +56,7 @@ const createSelect = (props: CreateSelectProps) => {
   );
 
   const value = () => (config.multiple ? _value() : _value()[0] || null);
-  const setValue = (value: Value) => _setValue(parseValue(value));
+  const setValue = (value: RawValue) => _setValue(parseValue(value));
   const clearValue = () => _setValue([]);
   const hasValue = () => !!(config.multiple ? value().length : value());
 
@@ -92,7 +92,7 @@ const createSelect = (props: CreateSelectProps) => {
       : () => config.options;
   const optionsCount = () => options().length;
 
-  const pickOption = (option: Option) => {
+  const pickOption = (option: RawOption) => {
     if (config.isOptionDisabled(option)) return;
 
     const value = config.optionToValue(option);
@@ -286,7 +286,7 @@ const createSelect = (props: CreateSelectProps) => {
             return;
           }
           if (config.multiple) {
-            const currentValue = value() as SingleValue[];
+            const currentValue = value() as RawSingleValue[];
             setValue([...currentValue.slice(0, -1)]);
           } else {
             clearValue();
@@ -360,6 +360,3 @@ const createSelect = (props: CreateSelectProps) => {
     listRef,
   };
 };
-
-export { createSelect };
-export type { CreateSelectProps, SingleValue, Value, Option };

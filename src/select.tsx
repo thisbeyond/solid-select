@@ -12,14 +12,14 @@ import {
 
 import {
   createSelect,
-  Option as OptionType,
-  Value as ValueType,
+  RawOption,
+  RawValue,
   CreateSelectProps,
 } from "./create-select";
 
-interface CommonProps {
+export interface CommonProps {
   format: (
-    data: OptionType | ValueType,
+    data: RawOption | RawValue,
     type: "option" | "value"
   ) => string | undefined;
   placeholder?: string;
@@ -33,11 +33,11 @@ interface CommonProps {
   emptyPlaceholder?: string;
 }
 
-type SelectReturn = ReturnType<typeof createSelect>;
+export type SelectReturn = ReturnType<typeof createSelect>;
 
-type SelectProps = CreateSelectProps & Partial<CommonProps>;
+export type SelectProps = CreateSelectProps & Partial<CommonProps>;
 
-const Select: Component<SelectProps> = (props) => {
+export const Select: Component<SelectProps> = (props) => {
   const [selectProps, local] = splitProps(
     mergeProps(
       {
@@ -100,7 +100,7 @@ const Select: Component<SelectProps> = (props) => {
         loadingPlaceholder={local.loadingPlaceholder}
         emptyPlaceholder={local.emptyPlaceholder}
       >
-        {(option: OptionType) => (
+        {(option: RawOption) => (
           <Option
             isDisabled={select.isOptionDisabled(option)}
             isFocused={select.isOptionFocused(option)}
@@ -114,12 +114,12 @@ const Select: Component<SelectProps> = (props) => {
   );
 };
 
-type ContainerProps = {
+export type ContainerProps = {
   ref: SelectReturn["containerRef"];
   disabled: SelectReturn["disabled"];
 } & Pick<CommonProps, "class">;
 
-const Container: ParentComponent<ContainerProps> = (props) => {
+export const Container: ParentComponent<ContainerProps> = (props) => {
   return (
     <div
       class={`solid-select-container ${
@@ -133,7 +133,7 @@ const Container: ParentComponent<ContainerProps> = (props) => {
   );
 };
 
-type ControlProps = Omit<CommonProps, "class"> &
+export type ControlProps = Omit<CommonProps, "class"> &
   Pick<
     SelectReturn,
     | "value"
@@ -145,7 +145,7 @@ type ControlProps = Omit<CommonProps, "class"> &
     | "inputRef"
   >;
 
-const Control: Component<ControlProps> = (props) => {
+export const Control: Component<ControlProps> = (props) => {
   const removeValue = (index: number) => {
     const value = props.value;
     props.setValue([...value.slice(0, index), ...value.slice(index + 1)]);
@@ -185,17 +185,19 @@ const Control: Component<ControlProps> = (props) => {
   );
 };
 
-type PlaceholderProps = Pick<CommonProps, "placeholder">;
+export type PlaceholderProps = Pick<CommonProps, "placeholder">;
 
-const Placeholder: ParentComponent<PlaceholderProps> = (props) => {
+export const Placeholder: ParentComponent<PlaceholderProps> = (props) => {
   return <div class="solid-select-placeholder">{props.children}</div>;
 };
 
-const SingleValue: ParentComponent<{}> = (props) => {
+export const SingleValue: ParentComponent<{}> = (props) => {
   return <div class="solid-select-single-value">{props.children}</div>;
 };
 
-const MultiValue: ParentComponent<{ onRemove: () => void }> = (props) => {
+export const MultiValue: ParentComponent<{ onRemove: () => void }> = (
+  props
+) => {
   return (
     <div class="solid-select-multi-value">
       {props.children}
@@ -213,12 +215,12 @@ const MultiValue: ParentComponent<{ onRemove: () => void }> = (props) => {
   );
 };
 
-type InputProps = {
+export type InputProps = {
   ref: SelectReturn["inputRef"];
   disabled: SelectReturn["disabled"];
 } & Pick<CommonProps, "id" | "name" | "autofocus" | "readonly">;
 
-const Input: Component<InputProps> = (props) => {
+export const Input: Component<InputProps> = (props) => {
   return (
     <input
       ref={props.ref}
@@ -244,13 +246,13 @@ const Input: Component<InputProps> = (props) => {
   );
 };
 
-type ListProps = {
+export type ListProps = {
   ref: SelectReturn["listRef"];
-  children: (option: OptionType) => JSXElement;
+  children: (option: RawOption) => JSXElement;
 } & Pick<SelectReturn, "isOpen" | "options"> &
   Pick<CommonProps, "loading" | "loadingPlaceholder" | "emptyPlaceholder">;
 
-const List: Component<ListProps> = (props) => {
+export const List: Component<ListProps> = (props) => {
   return (
     <Show when={props.isOpen}>
       <div ref={props.ref} class="solid-select-list">
@@ -278,13 +280,13 @@ const List: Component<ListProps> = (props) => {
   );
 };
 
-type OptionProps = {
+export type OptionProps = {
   isDisabled: boolean;
   isFocused: boolean;
-  pickOption: [SelectReturn["pickOption"], OptionType];
+  pickOption: [SelectReturn["pickOption"], RawOption];
 };
 
-const Option: ParentComponent<OptionProps> = (props) => {
+export const Option: ParentComponent<OptionProps> = (props) => {
   const scrollIntoViewOnFocus = (element: HTMLDivElement) => {
     createEffect(() => {
       if (props.isFocused) {
@@ -303,16 +305,4 @@ const Option: ParentComponent<OptionProps> = (props) => {
       {props.children}
     </div>
   );
-};
-
-export {
-  Select,
-  Container,
-  Control,
-  Placeholder,
-  SingleValue,
-  MultiValue,
-  Input,
-  List,
-  Option,
 };

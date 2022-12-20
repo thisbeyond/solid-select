@@ -1,16 +1,6 @@
 import "virtual:windi.css";
-export { createSelect } from "./create-select";
-export { createOptions } from "./create-options";
-export { createAsyncOptions } from "./create-async-options";
-export { fuzzySort, fuzzySearch, fuzzyHighlight } from "./fuzzy";
-export {
-  Select,
-  Container,
-  Control,
-  Placeholder,
-  SingleValue,
-  MultiValue,
-  Input,
-  List,
-  Option,
-} from "./select";
+export * from "./create-select";
+export * from "./create-options";
+export * from "./create-async-options";
+export * from "./fuzzy";
+export * from "./select";

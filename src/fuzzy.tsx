@@ -1,12 +1,12 @@
-type FuzzySearchMatch = boolean;
+export type FuzzySearchMatch = boolean;
 
-interface FuzzySearchResult {
+export interface FuzzySearchResult {
   target: string;
   score: number;
   matches: FuzzySearchMatch[];
 }
 
-type FuzzySortResult = (FuzzySearchResult & {
+export type FuzzySortResult = (FuzzySearchResult & {
   item: any;
   index: number;
 })[];
@@ -18,7 +18,10 @@ const SCORING = {
   START: 3,
 };
 
-const fuzzySearch = (value: string, target: string): FuzzySearchResult => {
+export const fuzzySearch = (
+  value: string,
+  target: string
+): FuzzySearchResult => {
   let score = SCORING.NO_MATCH;
   let matches: FuzzySearchMatch[] = [];
 
@@ -66,7 +69,7 @@ const fuzzySearch = (value: string, target: string): FuzzySearchResult => {
   };
 };
 
-const fuzzyHighlight = (
+export const fuzzyHighlight = (
   searchResult: FuzzySearchResult,
   highlighter = (match: string) => <mark>{match}</mark>
 ) => {
@@ -105,7 +108,7 @@ const fuzzyHighlight = (
   );
 };
 
-const fuzzySort = (
+export const fuzzySort = (
   value: string,
   items: any[],
   key?: string
@@ -131,5 +134,3 @@ const fuzzySort = (
 
   return sorted;
 };
-
-export { fuzzySort, fuzzySearch, fuzzyHighlight };
