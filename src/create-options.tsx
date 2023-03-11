@@ -13,6 +13,7 @@ interface Option {
 
 interface CreateOptionsConfig {
   key?: string;
+  filterKey?:string;
   filterable?: boolean;
   createable?: boolean | ((inputValue: string) => Value);
   disable?: (value: Value) => boolean;
@@ -25,6 +26,7 @@ const createOptions = (
   const config = Object.assign(
     {
       filterable: true,
+      filterKey: 'label',
       disable: () => false,
     },
     userConfig || {}
@@ -46,7 +48,7 @@ const createOptions = (
     });
 
     if (config.filterable && inputValue) {
-      createdOptions = fuzzySort(inputValue, createdOptions, "label").map(
+      createdOptions = fuzzySort(inputValue, createdOptions, config.filterKey).map(
         (result) => ({
           ...result.item,
           label: fuzzyHighlight(result),
