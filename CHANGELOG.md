@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unrealeased]
+## [Unreleased]
 
 A major refactor to more clearly separate out the core and the builtin
 components. The builtin `Select` and accompanying component interfaces remains
