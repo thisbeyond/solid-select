@@ -111,6 +111,10 @@ const Container: ParentComponent<ContainerProps> = (props) => {
       data-disabled={select.disabled}
       onFocusIn={select.onFocusIn}
       onFocusOut={select.onFocusOut}
+      onPointerDown={(event) => {
+        select.onPointerDown(event);
+        event.currentTarget.getElementsByTagName("input")[0].focus();
+      }}
     >
       {props.children}
     </div>
@@ -181,7 +185,6 @@ const MultiValue: ParentComponent<{ onRemove: () => void }> = (props) => {
       <button
         type="button"
         class="solid-select-multi-value-remove"
-        onPointerDown={select.onPointerDown}
         onClick={(event: MouseEvent) => {
           event.stopPropagation();
           props.onRemove();
@@ -199,6 +202,9 @@ const Input: Component<InputProps> = (props) => {
   const select = useSelect();
   return (
     <input
+      onPointerDown={(event) => {
+        event.stopPropagation();
+      }}
       id={props.id}
       name={props.name}
       class="solid-select-input"
@@ -286,7 +292,6 @@ const Option: ParentComponent<OptionProps> = (props) => {
       data-focused={select.isOptionFocused(props.option)}
       class="solid-select-option"
       onClick={() => select.pickOption(props.option)}
-      onPointerDown={select.onPointerDown}
     >
       {props.children}
     </div>
