@@ -184,7 +184,7 @@ const createSelect = (props: CreateSelectProps) => {
     setIsActive(false);
     setIsOpen(false);
   };
-  const onPointerDown = (event: Event) => event.preventDefault();
+  const onMouseDown = (event: Event) => event.preventDefault();
 
   const onClick = (event: Event) => {
     if (!config.disabled && !hasInputValue()) toggleOpen();
@@ -277,7 +277,7 @@ const createSelect = (props: CreateSelectProps) => {
     isOptionDisabled: config.isOptionDisabled,
     onFocusIn,
     onFocusOut,
-    onPointerDown,
+    onMouseDown,
     onClick,
     onInput,
     onKeyDown,

@@ -111,8 +111,8 @@ const Container: ParentComponent<ContainerProps> = (props) => {
       data-disabled={select.disabled}
       onFocusIn={select.onFocusIn}
       onFocusOut={select.onFocusOut}
-      onPointerDown={(event) => {
-        select.onPointerDown(event);
+      onMouseDown={(event) => {
+        select.onMouseDown(event);
         event.currentTarget.getElementsByTagName("input")[0].focus();
       }}
     >
@@ -202,9 +202,6 @@ const Input: Component<InputProps> = (props) => {
   const select = useSelect();
   return (
     <input
-      onPointerDown={(event) => {
-        event.stopPropagation();
-      }}
       id={props.id}
       name={props.name}
       class="solid-select-input"
@@ -229,6 +226,9 @@ const Input: Component<InputProps> = (props) => {
             (event.target as HTMLElement).blur();
           }
         }
+      }}
+      onMouseDown={(event) => {
+        event.stopPropagation();
       }}
     />
   );
