@@ -1,5 +1,47 @@
 # Changelog
 
+## [Unrealeased]
+
+A major refactor to more clearly separate out the core and the builtin
+components. The builtin `Select` and accompanying component interfaces remains
+unchanged, but there are backwards incompatible changes to the `createSelect`
+interface.
+
+### Changed
+
+- **Breaking Change** Streamline the core and allow greater control in
+  components. No longer pass or use element refs in the core, including not
+  automatically settign up event handlers. Instead, return commonly useful
+  handlers (such as `onKeyDown`) from `createSelect` for use in components.
+
+- **Breaking Change** Expose signals directly as accessors rather than hiding
+  behind property getters in return of `createSelect`. For example,
+  `select.options` should now be `select.options()`. This more closely matches
+  SolidJS and avoids inconsistency around not being able to set properties
+  directly.
+
+- **Breaking Change** Remove helpers (such as `open` and `close`) in favour of
+  exposing setters (e.g. `setIsOpen`) consistently from `createSelect`. This
+  provides a more intuitive interface rather than some aspects having helpers
+  and others not.
+
+- **Breaking Change** Refactor `Select` components to make use of a shared
+  `Context` providing the created select. Avoid unnecessary prop drilling and
+  make it easier to others to compose their own selects (with `useSelect`).
+
+- **Breaking Change** Make `createAsyncOptions` throttle by default. The fetcher
+  will be called every 250ms by default to prevent excessive calls to resources.
+  The threshold can be configured or removed by passing a second argument - e.g.
+  `createAsyncOptions(fetcher, 0)` for original behaviour.
+
+- Hide the input caret with CSS rather than hide the entire input component to
+  make some logic easier (such as focus handling).
+
+### Fixed
+
+- Allow repositioning the cursor on active input text. Previously, attempting to
+  do this would clear the input value.
+
 ## [0.13.0] - 2022-09-12
 
 ### Changed
