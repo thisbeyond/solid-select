@@ -308,4 +308,6 @@ export {
   Input,
   List,
   Option,
+  SelectContext,
+  useSelect,
 };

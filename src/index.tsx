@@ -13,4 +13,6 @@ export {
   Input,
   List,
   Option,
+  SelectContext,
+  useSelect,
 } from "./select";
