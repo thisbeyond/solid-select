@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [0.14.0] - 2023-04-09
 
 A major refactor to more clearly separate out the core and the builtin
 components. The builtin `Select` and accompanying component interfaces remains
@@ -361,8 +361,9 @@ Initial release featuring core create select logic, accompanying component
 blocks and a composed component for convenience.
 
 <!-- prettier-ignore -->
-[unreleased]: https://github.com/thisbeyond/solid-select/compare/0.13.0...HEAD
+[unreleased]: https://github.com/thisbeyond/solid-select/compare/0.14.0...HEAD
 
+[0.14.0]: https://github.com/thisbeyond/solid-select/compare/0.13.0...0.14.0
 [0.13.0]: https://github.com/thisbeyond/solid-select/compare/0.12.0...0.13.0
 [0.12.0]: https://github.com/thisbeyond/solid-select/compare/0.11.0...0.12.0
 [0.11.0]: https://github.com/thisbeyond/solid-select/compare/0.10.0...0.11.0
