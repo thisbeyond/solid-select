@@ -7,7 +7,8 @@ const createAsyncOptions = (
   timeout = 250
 ) => {
   const [inputValue, setInputValue] = createSignal("");
-  const [asyncOptions] = createResource(inputValue, fetcher, {
+  const throttledFetcher = throttle(fetcher, timeout);
+  const [asyncOptions] = createResource(inputValue, throttledFetcher, {
     initialValue: [],
   });
 
@@ -18,30 +19,36 @@ const createAsyncOptions = (
     get loading() {
       return asyncOptions.loading;
     },
-    onInput: throttle(setInputValue, timeout),
+    onInput: setInputValue,
     readonly: false,
   };
 };
 
-// From https://github.com/solidjs-community/solid-primitives/blob/main/packages/scheduled/LICENSE
-const throttle = (callback: (...args: any) => any, threshold = 250) => {
-  let isThrottled = false,
+const throttle = (
+  callback: (...args: any[]) => Promise<unknown>,
+  threshold: number
+) => {
+  let activePromise: Promise<unknown> | null = null,
     timeoutId: ReturnType<typeof setTimeout>,
     lastArgs: Parameters<typeof callback>;
 
+  const wait = () =>
+    new Promise((resolve) => (timeoutId = setTimeout(resolve, threshold)));
+
   const throttled: typeof callback = (...args) => {
     lastArgs = args;
-    if (isThrottled) return;
-    isThrottled = true;
-    timeoutId = setTimeout(() => {
-      callback(...lastArgs);
-      isThrottled = false;
-    }, threshold);
+    if (activePromise) return activePromise;
+    activePromise = wait().then(() => {
+      activePromise = null;
+      return callback(...lastArgs);
+    });
+
+    return activePromise;
   };
 
   const clear = () => {
     clearTimeout(timeoutId);
-    isThrottled = false;
+    activePromise = null;
   };
 
   if (getOwner()) onCleanup(clear);
