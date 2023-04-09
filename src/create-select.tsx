@@ -1,7 +1,6 @@
 import {
   createEffect,
   createMemo,
-  createRenderEffect,
   createSignal,
   mergeProps,
   on,
@@ -22,8 +21,6 @@ interface CreateSelectProps {
   isOptionDisabled?: (option: Option) => boolean;
   onChange?: (value: Value) => void;
   onInput?: (inputValue: string) => void;
-  onFocus?: (event: FocusEvent) => void;
-  onBlur?: (event: FocusEvent) => void;
 }
 
 const createSelect = (props: CreateSelectProps) => {
@@ -52,7 +49,7 @@ const createSelect = (props: CreateSelectProps) => {
   };
 
   const [_value, _setValue] = createSignal(
-    config.initialValue ? parseValue(config.initialValue) : []
+    config.initialValue !== undefined ? parseValue(config.initialValue) : []
   );
 
   const value = () => (config.multiple ? _value() : _value()[0] || null);
@@ -64,6 +61,7 @@ const createSelect = (props: CreateSelectProps) => {
 
   const [inputValue, setInputValue] = createSignal("");
   const clearInputValue = () => setInputValue("");
+  const hasInputValue = () => !!inputValue().length;
 
   createEffect(
     on(inputValue, (inputValue) => config.onInput?.(inputValue), {
@@ -76,7 +74,7 @@ const createSelect = (props: CreateSelectProps) => {
       inputValue,
       (inputValue) => {
         if (inputValue && !isOpen()) {
-          open();
+          setIsOpen(true);
         }
       },
       { defer: true }
@@ -100,21 +98,14 @@ const createSelect = (props: CreateSelectProps) => {
       setValue([..._value(), value]);
     } else {
       setValue(value);
-      hideInput();
+      setIsActive(false);
     }
-    close();
+    setIsOpen(false);
   };
 
-  const [inputIsHidden, setInputIsHidden] = createSignal(false);
-  const showInput = () => setInputIsHidden(false);
-  const hideInput = () => setInputIsHidden(true);
-
+  const [isActive, setIsActive] = createSignal(false);
   const [isOpen, setIsOpen] = createSignal(false);
-  const open = () => setIsOpen(true);
-  const close = () => setIsOpen(false);
-  const toggle = () => setIsOpen(!isOpen());
-
-  const isDisabled = () => config.disabled;
+  const toggleOpen = () => setIsOpen(!isOpen());
 
   const [focusedOptionIndex, setFocusedOptionIndex] = createSignal(-1);
 
@@ -150,11 +141,14 @@ const createSelect = (props: CreateSelectProps) => {
   );
 
   createEffect(
-    on(isDisabled, (isDisabled) => {
-      if (isDisabled && isOpen()) {
-        close();
+    on(
+      () => config.disabled,
+      (isDisabled) => {
+        if (isDisabled && isOpen()) {
+          setIsOpen(false);
+        }
       }
-    })
+    )
   );
 
   createEffect(
@@ -163,10 +157,10 @@ const createSelect = (props: CreateSelectProps) => {
       (isOpen) => {
         if (isOpen) {
           if (focusedOptionIndex() === -1) focusNextOption();
-          showInput();
+          setIsActive(true);
         } else {
           if (focusedOptionIndex() > -1) setFocusedOptionIndex(-1);
-          clearInputValue();
+          setInputValue("");
         }
       },
       { defer: true }
@@ -178,186 +172,115 @@ const createSelect = (props: CreateSelectProps) => {
       focusedOptionIndex,
       (focusedOptionIndex) => {
         if (focusedOptionIndex > -1 && !isOpen()) {
-          open();
+          setIsOpen(true);
         }
       },
       { defer: true }
     )
   );
 
-  const refs: Record<string, null | HTMLElement> = {
-    containerRef: null,
-    inputRef: null,
-    listRef: null,
+  const onFocusIn = () => setIsActive(true);
+  const onFocusOut = () => {
+    setIsActive(false);
+    setIsOpen(false);
+  };
+  const onPointerDown = (event: Event) => event.preventDefault();
+
+  const onClick = (event: Event) => {
+    if (!config.disabled) toggleOpen();
   };
 
-  const containerRef = (element: HTMLElement) => {
-    refs.containerRef = element;
+  const onInput = (event: Event) => {
+    setInputValue((event.target as HTMLInputElement).value);
+  };
 
-    if (!element.getAttribute("tabIndex")) {
-      element.tabIndex = -1;
-    }
-
-    element.addEventListener("focusin", () => {
-      showInput();
-    });
-
-    element.addEventListener("focusout", (event: FocusEvent) => {
-      const target = event.relatedTarget as HTMLElement;
-      for (const relatedElement of Object.values(refs)) {
-        if (relatedElement?.contains(target)) {
-          event.preventDefault();
-          event.stopPropagation();
+  const onKeyDown = (event: KeyboardEvent) => {
+    switch (event.key) {
+      case "ArrowDown":
+        focusNextOption();
+        break;
+      case "ArrowUp":
+        focusPreviousOption();
+        break;
+      case "Enter":
+        if (isOpen() && focusedOption()) {
+          pickOption(focusedOption());
+          break;
+        }
+        return;
+      case "Escape":
+        if (isOpen()) {
+          setIsOpen(false);
+          break;
+        }
+        return;
+      case "Delete":
+      case "Backspace":
+        if (inputValue()) {
           return;
         }
-      }
-      close();
-    });
-
-    element.addEventListener("pointerdown", (event) => {
-      if (refs.inputRef && event.target !== refs.inputRef) {
-        event.preventDefault();
-      }
-    });
-
-    element.addEventListener("click", (event) => {
-      if (
-        !refs.listRef ||
-        !refs.listRef.contains(event.target as HTMLElement)
-      ) {
-        if (refs.inputRef) {
-          refs.inputRef.focus();
+        if (config.multiple) {
+          const currentValue = value() as SingleValue[];
+          setValue([...currentValue.slice(0, -1)]);
+        } else {
+          clearValue();
         }
-        toggle();
-      }
-    });
-  };
-
-  const inputRef = (element: HTMLInputElement) => {
-    refs.inputRef = element;
-
-    if (!element.getAttribute("tabIndex")) {
-      element.tabIndex = -1;
-    }
-
-    createRenderEffect(() => (element.value = inputValue()));
-    element.addEventListener("input", (event: Event) => {
-      setInputValue((event.target as HTMLInputElement).value);
-    });
-
-    createRenderEffect(() => {
-      element.style.setProperty("opacity", inputIsHidden() ? "0" : "1");
-    });
-
-    element.addEventListener("focus", (event: FocusEvent) => {
-      if (config.onFocus) {
-        config.onFocus(event);
-      }
-    });
-    element.addEventListener("blur", (event: FocusEvent) => {
-      if (config.onBlur) {
-        config.onBlur(event);
-      }
-    });
-
-    element.addEventListener("keydown", (event) => {
-      switch (event.key) {
-        case "ArrowDown":
-          focusNextOption();
-          break;
-        case "ArrowUp":
-          focusPreviousOption();
-          break;
-        case "Enter":
-          if (isOpen() && focusedOption()) {
+        break;
+      case " ":
+        if (inputValue()) {
+          return;
+        }
+        if (!isOpen()) {
+          setIsOpen(true);
+        } else {
+          if (focusedOption()) {
             pickOption(focusedOption());
-            break;
           }
-          return;
-        case "Escape":
-          if (isOpen()) {
-            close();
-            break;
-          }
-          return;
-        case "Delete":
-        case "Backspace":
-          if (inputValue()) {
-            return;
-          }
-          if (config.multiple) {
-            const currentValue = value() as SingleValue[];
-            setValue([...currentValue.slice(0, -1)]);
-          } else {
-            clearValue();
-          }
+        }
+        break;
+      case "Tab":
+        if (focusedOption() && isOpen()) {
+          pickOption(focusedOption());
           break;
-        case " ":
-          if (inputValue()) {
-            return;
-          }
-          if (!isOpen()) {
-            open();
-          } else {
-            if (focusedOption()) {
-              pickOption(focusedOption());
-            }
-          }
-          break;
-        case "Tab":
-          if (focusedOption() && isOpen()) {
-            pickOption(focusedOption());
-            break;
-          }
-          return;
-        default:
-          return;
-      }
-      event.preventDefault();
-      event.stopPropagation();
-    });
-  };
-
-  const listRef = (element: HTMLElement) => {
-    refs.listRef = element;
-
-    if (!element.getAttribute("tabIndex")) {
-      element.tabIndex = -1;
+        }
+        return;
+      default:
+        return;
     }
-
-    element.addEventListener("pointerdown", (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-    });
+    event.preventDefault();
+    event.stopPropagation();
   };
 
   return {
-    get value() {
-      return value();
-    },
-    get hasValue() {
-      return hasValue();
-    },
+    options,
+    value,
     setValue,
-    get options() {
-      return options();
+    hasValue,
+    clearValue,
+    inputValue,
+    setInputValue,
+    hasInputValue,
+    clearInputValue,
+    isOpen,
+    setIsOpen,
+    toggleOpen,
+    isActive,
+    setIsActive,
+    get multiple() {
+      return config.multiple;
     },
-    get inputValue() {
-      return inputValue();
-    },
-    get isOpen() {
-      return isOpen();
-    },
-    multiple: config.multiple,
     get disabled() {
-      return isDisabled();
+      return config.disabled;
     },
     pickOption,
     isOptionFocused,
     isOptionDisabled: config.isOptionDisabled,
-    containerRef,
-    inputRef,
-    listRef,
+    onFocusIn,
+    onFocusOut,
+    onPointerDown,
+    onClick,
+    onInput,
+    onKeyDown,
   };
 };
 

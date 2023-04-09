@@ -30,6 +30,11 @@ export default defineConfig({
           return `.${className}[data-has-value="true"]`;
         });
       });
+      addVariant("data-is-active", ({ modifySelectors }) => {
+        return modifySelectors(({ className }) => {
+          return `.${className}[data-is-active="true"]`;
+        });
+      });
       addVariant("data-multiple", ({ modifySelectors }) => {
         return modifySelectors(({ className }) => {
           return `.${className}[data-multiple="true"]`;
@@ -57,7 +62,9 @@ export default defineConfig({
     "solid-select-multi-value-remove": "px-1 hover:text-shadow-xl",
     "solid-select-input":
       "col-start-1 row-start-1 flex-1 bg-transparent outline-none m-0 p-0 " +
-      "border-0 text-inherit read-only:cursor-default",
+      "border-0 text-inherit read-only:cursor-default " +
+      "caret-transparent " +
+      "data-multiple:(caret-current) data-is-active:(caret-current)",
     "solid-select-list":
       "absolute min-w-full bg-[inherit] color-[inherit] shadow-lg " +
       "whitespace-nowrap rounded-sm mt-1 p-2 z-1 overflow-y-auto max-h-50vh",
