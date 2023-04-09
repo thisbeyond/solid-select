@@ -187,7 +187,7 @@ const createSelect = (props: CreateSelectProps) => {
   const onPointerDown = (event: Event) => event.preventDefault();
 
   const onClick = (event: Event) => {
-    if (!config.disabled) toggleOpen();
+    if (!config.disabled && !hasInputValue()) toggleOpen();
   };
 
   const onInput = (event: Event) => {
