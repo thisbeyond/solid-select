@@ -16,6 +16,7 @@ interface CreateOptionsConfig {
   filterable?: boolean;
   createable?: boolean | ((inputValue: string) => Value);
   disable?: (value: Value) => boolean;
+  customCreateLabel?: string
 }
 
 const createOptions = (
@@ -71,7 +72,7 @@ const createOptions = (
         const option = {
           label: (
             <>
-              Create <mark>{getLabel(value)}</mark>
+              {config.customCreateLabel ?? 'Create'}  <mark>{getLabel(value)}</mark>
             </>
           ),
           value,
