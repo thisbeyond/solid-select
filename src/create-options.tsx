@@ -3,25 +3,25 @@ import { JSXElement } from "solid-js";
 import { Value } from "./create-select";
 import { fuzzyHighlight, fuzzySort } from "./fuzzy";
 
-type Values = Value[];
+type Values<V> = V[];
 
-interface Option {
+interface Option<V> {
   label: JSXElement;
-  value: Value;
+  value: Value<V>;
   disabled: boolean;
 }
 
-interface CreateOptionsConfig {
+interface CreateOptionsConfig<V> {
   key?: string;
   filterable?: boolean;
-  createable?: boolean | ((inputValue: string) => Value);
-  disable?: (value: Value) => boolean;
+  createable?: boolean | ((inputValue: string) => Value<V>);
+  disable?: (value: Value<V>) => boolean;
 }
 
-const createOptions = (
-  values: Values | ((inputValue: string) => Values),
-  userConfig?: CreateOptionsConfig
-) => {
+function createOptions<V extends JSXElement>(
+  values: Values<V> | ((inputValue: string) => Values<V>),
+  userConfig?: CreateOptionsConfig<V>
+) {
   const config = Object.assign(
     {
       filterable: true,
@@ -30,14 +30,16 @@ const createOptions = (
     userConfig || {}
   );
 
-  const getLabel = (value: Value) =>
-    config?.key !== undefined ? value[config.key] : value;
+  const getLabel = (value: Value<V>) => {
+    let v = value as unknown
+    return (config?.key !== undefined && v != null) ? v[config.key as keyof typeof v] : value
+  }
 
   const options = (inputValue: string) => {
     const initialValues =
       typeof values === "function" ? values(inputValue) : values;
 
-    let createdOptions: Option[] = initialValues.map((value) => {
+    let createdOptions: Option<V>[] = initialValues.map((value) => {
       return {
         label: getLabel(value),
         value: value,
@@ -56,16 +58,17 @@ const createOptions = (
 
     if (config.createable !== undefined) {
       const trimmedValue = inputValue.trim();
-      const exists = createdOptions.some((option) =>
-        areEqualIgnoringCase(inputValue, getLabel(option.value))
-      );
+      const exists = createdOptions.some((option) => {
+        const label = getLabel(option.value)
+        return (typeof label === "string") ? areEqualIgnoringCase(inputValue, label) : false
+      });
 
       if (trimmedValue && !exists) {
-        let value: Value;
+        let value: Value<V>;
         if (typeof config.createable === "function") {
           value = config.createable(trimmedValue);
         } else {
-          value = config.key ? { [config.key]: trimmedValue } : trimmedValue;
+          value = (config.key ? { [config.key]: trimmedValue } : trimmedValue) as Value<V>;
         }
 
         const option = {
@@ -84,12 +87,12 @@ const createOptions = (
     return createdOptions;
   };
 
-  const optionToValue = (option: Option) => option.value;
+  const optionToValue = (option: Option<V>) => option.value;
 
-  const format = (item: Option | Value, type: "option" | "value") =>
-    type === "option" ? item.label : getLabel(item);
+  const format = (item: Option<V> | Value<V>, type: "option" | "value") =>
+    type === "option" ? (item as Option<V>).label : getLabel(item as Value<V>);
 
-  const isOptionDisabled = (option: Option) => option.disabled;
+  const isOptionDisabled = (option: Option<V>) => option.disabled;
 
   return {
     options,

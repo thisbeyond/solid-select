@@ -3,23 +3,22 @@ import {
   For,
   splitProps,
   mergeProps,
-  Component,
   ParentComponent,
   createEffect,
   on,
   createContext,
   useContext,
+  JSX,
 } from "solid-js";
 import {
   createSelect,
-  Option as OptionType,
   Value as ValueType,
   CreateSelectProps,
 } from "./create-select";
 
-interface CommonProps {
+interface CommonProps<O, V> {
   format: (
-    data: OptionType | ValueType,
+    data: O | ValueType<V>,
     type: "option" | "value"
   ) => string | undefined;
   placeholder?: string;
@@ -31,25 +30,32 @@ interface CommonProps {
   loading?: boolean;
   loadingPlaceholder?: string;
   emptyPlaceholder?: string;
+  children?: JSX.Element;
 }
 
-type SelectReturn = ReturnType<typeof createSelect>;
+type SelectReturn<O,V> = ReturnType<typeof createSelect<O,V>>;
 
-type SelectProps = CreateSelectProps & Partial<CommonProps>;
+type SelectProps<O, V> = CreateSelectProps<O, V> & Partial<CommonProps<O,V>>;
 
-const SelectContext = createContext<SelectReturn>();
+function SelectContext<O,V>() {
+  return createContext<SelectReturn<O,V>>()
+};
 
-const useSelect = () => {
-  const context = useContext(SelectContext);
+function SelectContextProvider<O,V>(props:{value: SelectReturn<O,V>, children: JSX.Element}) {
+  return SelectContext<O,V>().Provider(props)
+};
+
+const useSelect = <O,V>() => {
+  const context = useContext(SelectContext<O,V>());
   if (!context) throw new Error("No SelectContext found in ancestry.");
   return context;
 };
 
-const Select: Component<SelectProps> = (props) => {
+function Select<O,V>(props:SelectProps<O,V>) {
   const [selectProps, local] = splitProps(
     mergeProps(
       {
-        format: ((data, type) => data) as CommonProps["format"],
+        format: ((data, type) => data) as CommonProps<O,V>["format"],
         placeholder: "Select...",
         readonly: typeof props.options !== "function",
         loading: false,
@@ -68,7 +74,7 @@ const Select: Component<SelectProps> = (props) => {
       "onChange",
     ]
   );
-  const select = createSelect(selectProps);
+  const select = createSelect<O,V>(selectProps);
 
   createEffect(
     on(
@@ -78,7 +84,7 @@ const Select: Component<SelectProps> = (props) => {
   );
 
   return (
-    <SelectContext.Provider value={select}>
+    <SelectContextProvider value={select}>
       <Container class={local.class}>
         <Control
           id={local.id}
@@ -95,14 +101,14 @@ const Select: Component<SelectProps> = (props) => {
           format={local.format}
         />
       </Container>
-    </SelectContext.Provider>
+    </SelectContextProvider>
   );
 };
 
-type ContainerProps = Pick<CommonProps, "class">;
+type ContainerProps<O,V> = Pick<CommonProps<O,V>, "class" | "children">;
 
-const Container: ParentComponent<ContainerProps> = (props) => {
-  const select = useSelect();
+function Container<O,V>(props:ContainerProps<O,V>) {
+  const select = useSelect<O,V>();
   return (
     <div
       class={`solid-select-container ${
@@ -121,13 +127,13 @@ const Container: ParentComponent<ContainerProps> = (props) => {
   );
 };
 
-type ControlProps = Omit<CommonProps, "class">;
+type ControlProps<O,V> = Omit<CommonProps<O,V>, "class">;
 
-const Control: Component<ControlProps> = (props) => {
-  const select = useSelect();
+function Control<O,V>(props:ControlProps<O,V>) {
+  const select = useSelect<O, V>();
 
   const removeValue = (index: number) => {
-    const value = select.value();
+    const value = select.value() as V[];
     select.setValue([...value.slice(0, index), ...value.slice(index + 1)]);
   };
 
@@ -145,10 +151,10 @@ const Control: Component<ControlProps> = (props) => {
       <Show
         when={select.hasValue() && !select.multiple && !select.hasInputValue()}
       >
-        <SingleValue>{props.format(select.value(), "value")}</SingleValue>
+        <SingleValue>{props.format(select.value()!, "value")}</SingleValue>
       </Show>
       <Show when={select.hasValue() && select.multiple}>
-        <For each={select.value()}>
+        <For each={select.value() as V[]}>
           {(value, index) => (
             <MultiValue onRemove={() => removeValue(index())}>
               {props.format(value, "value")}
@@ -166,9 +172,9 @@ const Control: Component<ControlProps> = (props) => {
   );
 };
 
-type PlaceholderProps = Pick<CommonProps, "placeholder">;
+type PlaceholderProps<O,V> = Pick<CommonProps<O,V>, "placeholder" | "children">
 
-const Placeholder: ParentComponent<PlaceholderProps> = (props) => {
+function Placeholder<O,V>(props:PlaceholderProps<O,V>) {
   return <div class="solid-select-placeholder">{props.children}</div>;
 };
 
@@ -196,9 +202,9 @@ const MultiValue: ParentComponent<{ onRemove: () => void }> = (props) => {
   );
 };
 
-type InputProps = Pick<CommonProps, "id" | "name" | "autofocus" | "readonly">;
+type InputProps<O,V> = Pick<CommonProps<O,V>, "id" | "name" | "autofocus" | "readonly">;
 
-const Input: Component<InputProps> = (props) => {
+function Input<O,V>(props:InputProps<O,V>)  {
   const select = useSelect();
   return (
     <input
@@ -234,12 +240,12 @@ const Input: Component<InputProps> = (props) => {
   );
 };
 
-type ListProps = Pick<
-  CommonProps,
+type ListProps<O,V> = Pick<
+  CommonProps<O,V>,
   "loading" | "loadingPlaceholder" | "emptyPlaceholder" | "format"
 >;
 
-const List: Component<ListProps> = (props) => {
+function List<O,V>(props:ListProps<O,V>) {
   const select = useSelect();
 
   return (
@@ -261,7 +267,7 @@ const List: Component<ListProps> = (props) => {
               </div>
             }
           >
-            {(option: OptionType) => (
+            {(option: O) => (
               <Option option={option}>{props.format(option, "option")}</Option>
             )}
           </For>
@@ -271,11 +277,12 @@ const List: Component<ListProps> = (props) => {
   );
 };
 
-type OptionProps = {
-  option: OptionType;
+type OptionProps<O> = {
+  option: O;
+  children?: JSX.Element;
 };
 
-const Option: ParentComponent<OptionProps> = (props) => {
+function Option<O>(props:OptionProps<O>) {
   const select = useSelect();
 
   const scrollIntoViewOnFocus = (element: HTMLDivElement) => {
