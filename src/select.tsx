@@ -51,7 +51,7 @@ const useSelect = <O,V>() => {
   return context;
 };
 
-function Select<O,V>(props:SelectProps<O,V>) {
+function Select<O,V>(props: SelectProps<O,V>) {
   const [selectProps, local] = splitProps(
     mergeProps(
       {

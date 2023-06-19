@@ -39,7 +39,7 @@ function createSelect<O, V>(props: CreateSelectProps<O, V>) {
     } else {
       throw new Error(
         `Incompatible value type for ${
-          config.multiple ? "multple" : "single"
+          config.multiple ? "multiple" : "single"
         } select.`
       );
     }
