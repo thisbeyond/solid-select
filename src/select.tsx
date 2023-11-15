@@ -211,6 +211,7 @@ const Input: Component<InputProps> = (props) => {
       tabIndex={0}
       autocomplete="off"
       autocapitalize="none"
+      autoCorrect="off"
       autofocus={props.autofocus}
       readonly={props.readonly}
       disabled={select.disabled}
