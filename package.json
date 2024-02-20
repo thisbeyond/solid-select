@@ -31,6 +31,7 @@
   "exports": {
     ".": {
       "solid": "./dist/source/index.jsx",
+      "types": "./dist/types/index.d.ts",
       "default": "./dist/esm/index.js"
     },
     "./style.css": "./dist/esm/style.css"
