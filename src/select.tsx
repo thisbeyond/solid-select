@@ -9,6 +9,7 @@ import {
   on,
   createContext,
   useContext,
+  JSXElement,
 } from "solid-js";
 import {
   createSelect,
@@ -21,7 +22,7 @@ interface CommonProps {
   format: (
     data: OptionType | ValueType,
     type: "option" | "value"
-  ) => string | undefined;
+  ) => JSXElement | undefined;
   placeholder?: string;
   id?: string;
   name?: string;
