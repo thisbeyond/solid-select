@@ -10,6 +10,7 @@ import {
   createContext,
   useContext,
   JSXElement,
+  Ref,
 } from "solid-js";
 import {
   createSelect,
@@ -21,7 +22,7 @@ import {
 interface CommonProps {
   format: (
     data: OptionType | ValueType,
-    type: "option" | "value"
+    type: "option" | "value",
   ) => JSXElement | undefined;
   placeholder?: string;
   id?: string;
@@ -32,6 +33,7 @@ interface CommonProps {
   loading?: boolean;
   loadingPlaceholder?: string;
   emptyPlaceholder?: string;
+  ref?: Ref<HTMLInputElement>;
 }
 
 type SelectReturn = ReturnType<typeof createSelect>;
@@ -57,7 +59,7 @@ const Select: Component<SelectProps> = (props) => {
         loadingPlaceholder: "Loading...",
         emptyPlaceholder: "No options",
       },
-      props
+      props,
     ),
     [
       "options",
@@ -67,15 +69,15 @@ const Select: Component<SelectProps> = (props) => {
       "disabled",
       "onInput",
       "onChange",
-    ]
+    ],
   );
   const select = createSelect(selectProps);
 
   createEffect(
     on(
       () => local.initialValue,
-      (value) => value !== undefined && select.setValue(value)
-    )
+      (value) => value !== undefined && select.setValue(value),
+    ),
   );
 
   return (
@@ -88,6 +90,7 @@ const Select: Component<SelectProps> = (props) => {
           placeholder={local.placeholder}
           autofocus={local.autofocus}
           readonly={local.readonly}
+          ref={props.ref}
         />
         <List
           loading={local.loading}
@@ -162,6 +165,7 @@ const Control: Component<ControlProps> = (props) => {
         name={props.name}
         autofocus={props.autofocus}
         readonly={props.readonly}
+        ref={props.ref}
       />
     </div>
   );
@@ -197,12 +201,16 @@ const MultiValue: ParentComponent<{ onRemove: () => void }> = (props) => {
   );
 };
 
-type InputProps = Pick<CommonProps, "id" | "name" | "autofocus" | "readonly">;
+type InputProps = Pick<
+  CommonProps,
+  "id" | "name" | "autofocus" | "readonly" | "ref"
+>;
 
 const Input: Component<InputProps> = (props) => {
   const select = useSelect();
   return (
     <input
+      ref={props.ref}
       id={props.id}
       name={props.name}
       class="solid-select-input"
