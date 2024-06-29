@@ -13,21 +13,21 @@ interface Option {
 
 interface CreateOptionsConfig {
   key?: string;
-  filterable?: boolean;
+  filterable?: boolean | ((inputValue: string, options: Option[]) => Option[]);
   createable?: boolean | ((inputValue: string) => Value);
   disable?: (value: Value) => boolean;
 }
 
 const createOptions = (
   values: Values | ((inputValue: string) => Values),
-  userConfig?: CreateOptionsConfig
+  userConfig?: CreateOptionsConfig,
 ) => {
   const config = Object.assign(
     {
       filterable: true,
       disable: () => false,
-    },
-    userConfig || {}
+    } as Required<Pick<CreateOptionsConfig, "filterable" | "disable">>,
+    userConfig || {},
   );
 
   const getLabel = (value: Value) =>
@@ -46,18 +46,22 @@ const createOptions = (
     });
 
     if (config.filterable && inputValue) {
-      createdOptions = fuzzySort(inputValue, createdOptions, "label").map(
-        (result) => ({
-          ...result.item,
-          label: fuzzyHighlight(result),
-        })
-      );
+      if (typeof config.filterable === "function") {
+        createdOptions = config.filterable(inputValue, createdOptions);
+      } else {
+        createdOptions = fuzzySort(inputValue, createdOptions, "label").map(
+          (result) => ({
+            ...result.item,
+            label: fuzzyHighlight(result),
+          }),
+        );
+      }
     }
 
     if (config.createable !== undefined) {
       const trimmedValue = inputValue.trim();
       const exists = createdOptions.some((option) =>
-        areEqualIgnoringCase(inputValue, getLabel(option.value))
+        areEqualIgnoringCase(inputValue, getLabel(option.value)),
       );
 
       if (trimmedValue && !exists) {
