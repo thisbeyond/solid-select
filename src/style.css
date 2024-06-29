@@ -23,6 +23,8 @@
   padding-left: 0.5rem;
   padding-right: 0.5rem;
   grid-template-columns: repeat(1, minmax(0, 1fr));
+  outline: 2px solid transparent;
+  outline-offset: 2px;
 }
 .solid-select-control[data-multiple="true"][data-has-value="true"] {
   display: -webkit-box;
@@ -88,13 +90,12 @@
   -webkit-flex: 1 1 0%;
   flex: 1 1 0%;
   margin: 0px;
-  outline: 2px solid transparent;
-  outline-offset: 2px;
   padding: 0px;
   caret-color: transparent;
   grid-column-start: 1;
   grid-row-start: 1;
   font: inherit;
+  outline: none;
 }
 .solid-select-input:read-only {
   cursor: default;
