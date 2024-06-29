@@ -1,4 +1,3 @@
-import "virtual:windi.css";
 export { createSelect } from "./create-select";
 export { createOptions } from "./create-options";
 export { createAsyncOptions } from "./create-async-options";
