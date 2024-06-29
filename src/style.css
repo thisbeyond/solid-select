@@ -5,49 +5,35 @@
   position: relative;
 }
 .solid-select-control[data-disabled="true"] {
-  --tw-bg-opacity: 1;
-  background-color: rgba(243, 244, 246, var(--tw-bg-opacity));
-  --tw-border-opacity: 1;
-  border-color: rgba(209, 213, 219, var(--tw-border-opacity));
+  background-color: rgb(243, 244, 246);
+  border-color: rgb(209, 213, 219);
 }
 .solid-select-control {
-  --tw-border-opacity: 1;
-  border-color: rgba(229, 231, 235, var(--tw-border-opacity));
+  border-color: rgb(229, 231, 235);
   border-radius: 0.25rem;
   border-width: 1px;
-  display: -ms-grid;
   display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
   line-height: 1.5;
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
   padding-left: 0.5rem;
   padding-right: 0.5rem;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
   outline: 2px solid transparent;
   outline-offset: 2px;
 }
 .solid-select-control[data-multiple="true"][data-has-value="true"] {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: -webkit-flex;
   display: flex;
-  -ms-flex-wrap: wrap;
-  -webkit-flex-wrap: wrap;
   flex-wrap: wrap;
-  -webkit-box-align: stretch;
-  -ms-flex-align: stretch;
-  -webkit-align-items: stretch;
   align-items: stretch;
   grid-gap: 0.25rem;
   gap: 0.25rem;
 }
 .solid-select-control:focus-within {
-  --tw-outline-opacity: 1;
-  outline-color: rgba(209, 213, 219, var(--tw-outline-opacity));
+  outline-color: rgb(209, 213, 219);
 }
 .solid-select-placeholder {
-  --tw-text-opacity: 1;
-  color: rgba(156, 163, 175, var(--tw-text-opacity));
+  color: rgb(156, 163, 175);
   grid-column-start: 1;
   grid-row-start: 1;
 }
@@ -56,16 +42,9 @@
   grid-row-start: 1;
 }
 .solid-select-multi-value {
-  --tw-bg-opacity: 1;
-  background-color: rgba(243, 244, 246, var(--tw-bg-opacity));
+  background-color: rgb(243, 244, 246);
   border-radius: 0.25rem;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: -webkit-flex;
   display: flex;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  -webkit-align-items: center;
   align-items: center;
   font-size: 85%;
   line-height: 1;
@@ -85,9 +64,6 @@
 .solid-select-input {
   background-color: transparent;
   border-width: 0px;
-  -webkit-box-flex: 1;
-  -ms-flex: 1 1 0%;
-  -webkit-flex: 1 1 0%;
   flex: 1 1 0%;
   margin: 0px;
   padding: 0px;
@@ -115,30 +91,23 @@
   overflow-y: auto;
   padding: 0.5rem;
   position: absolute;
-  --tw-shadow: 0 10px 15px -3px rgb(0 0 0/0.1), 0 4px 6px -4px rgb(0 0 0/0.1);
-  --tw-shadow-colored: 0 10px 15px -3px var(--tw-shadow-color),
-    0 4px 6px -4px var(--tw-shadow-color);
-  -webkit-box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
-    var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
-    var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+  box-shadow:
+    0 0 #0000,
+    0 0 #0000,
+    0 10px 15px -3px rgb(0 0 0/0.1),
+    0 4px 6px -4px rgb(0 0 0/0.1);
   white-space: nowrap;
   z-index: 1;
 }
 .solid-select-option:hover {
-  --tw-bg-opacity: 1;
-  background-color: rgba(229, 231, 235, var(--tw-bg-opacity));
+  background-color: rgb(229, 231, 235);
 }
 .solid-select-option[data-focused="true"] {
-  --tw-bg-opacity: 1;
-  background-color: rgba(243, 244, 246, var(--tw-bg-opacity));
+  background-color: rgb(243, 244, 246);
 }
 .solid-select-option > mark {
-  --tw-bg-opacity: 1;
-  background-color: rgba(unset, var(--tw-bg-opacity));
-  --tw-text-opacity: 1;
-  color: rgba(unset, var(--tw-text-opacity));
-  -webkit-text-decoration-line: underline;
+  background-color: unset;
+  color: unset;
   text-decoration-line: underline;
 }
 .solid-select-option {
@@ -147,15 +116,11 @@
   padding-right: 1rem;
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
 }
 .solid-select-option[data-disabled="true"] {
   pointer-events: none;
-  --tw-text-opacity: 1;
-  color: rgba(156, 163, 175, var(--tw-text-opacity));
+  color: rgb(156, 163, 175);
 }
 .solid-select-list-placeholder {
   cursor: default;
@@ -163,8 +128,5 @@
   padding-right: 1rem;
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
 }
