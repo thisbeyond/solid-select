@@ -25,29 +25,29 @@
   "files": [
     "dist"
   ],
-  "main": "./dist/index/index.js",
-  "module": "./dist/index/index.js",
-  "types": "./dist/index/index.d.ts",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "browser": {},
   "exports": {
     ".": {
       "solid": {
-        "development": "./dist/index/dev.jsx",
-        "import": "./dist/index/index.jsx"
+        "development": "./dist/dev.jsx",
+        "import": "./dist/index.jsx"
       },
       "development": {
         "import": {
-          "types": "./dist/index/index.d.ts",
-          "default": "./dist/index/dev.js"
+          "types": "./dist/index.d.ts",
+          "default": "./dist/dev.js"
         }
       },
       "import": {
-        "types": "./dist/index/index.d.ts",
-        "default": "./dist/index/index.js"
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
       }
     },
     "./style.css": {
-      "import": "./dist/style.css/index.css"
+      "import": "./dist/style.css"
     }
   },
   "typesVersions": {},
