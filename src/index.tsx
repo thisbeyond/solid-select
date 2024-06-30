@@ -1,5 +1,5 @@
 export { createSelect } from "./create-select";
-export { createOptions } from "./create-options";
+export { createOptions, defaultFormat } from "./create-options";
 export { createAsyncOptions } from "./create-async-options";
 export { fuzzySort, fuzzySearch, fuzzyHighlight } from "./fuzzy";
 export {

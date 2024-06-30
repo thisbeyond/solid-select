@@ -5,33 +5,87 @@ import { fuzzyHighlight, fuzzySort } from "./fuzzy";
 
 type Values = Value[];
 
+type NonNullJSXElement = Exclude<JSXElement, null | undefined>;
+
 interface Option {
-  label: JSXElement;
   value: Value;
+  label: NonNullJSXElement;
+  text: string;
   disabled: boolean;
 }
 
-interface CreateOptionsConfig {
-  key?: string;
+type CreateOptionsFormatType = "value" | "label" | "text";
+
+type CreateOptionsFormat = <T extends CreateOptionsFormatType>(
+  value: Value,
+  type: T,
+  meta: { highlight?: JSXElement; prefix?: string },
+) => T extends "text" ? string : NonNullJSXElement;
+
+export const defaultFormat: CreateOptionsFormat = (value, type, meta) => {
+  switch (type) {
+    case "value":
+      return value;
+    case "text":
+      return value.toString();
+    case "label":
+      return (
+        <>
+          {meta?.prefix}
+          {meta?.highlight ?? value}
+        </>
+      );
+  }
+};
+
+type CreateOptionsConfig = (
+  | {
+      key?: string;
+      format?: never;
+    }
+  | {
+      format?: CreateOptionsFormat;
+      key?: never;
+    }
+) & {
   filterable?: boolean | ((inputValue: string, options: Option[]) => Option[]);
   createable?: boolean | ((inputValue: string) => Value);
   disable?: (value: Value) => boolean;
-}
+};
 
 const createOptions = (
   values: Values | ((inputValue: string) => Values),
   userConfig?: CreateOptionsConfig,
 ) => {
-  const config = Object.assign(
-    {
-      filterable: true,
-      disable: () => false,
-    } as Required<Pick<CreateOptionsConfig, "filterable" | "disable">>,
-    userConfig || {},
-  );
+  const config: CreateOptionsConfig &
+    Required<Pick<CreateOptionsConfig, "filterable" | "disable">> =
+    Object.assign(
+      {
+        filterable: true,
+        disable: () => false,
+      },
+      userConfig || {},
+    );
 
-  const getLabel = (value: Value) =>
-    config?.key !== undefined ? value[config.key] : value;
+  if (config.key && config.format) {
+    console.warn(
+      "The 'key' option is ignored when 'format' option is specified.",
+    );
+  }
+
+  const formatter: <T extends CreateOptionsFormatType>(
+    value: Value,
+    type: T,
+    meta?: { highlight?: JSXElement; prefix?: string },
+  ) => T extends "text" ? string : NonNullJSXElement = (
+    value,
+    type,
+    meta = {},
+  ) => {
+    return config.format
+      ? config.format(value, type, meta)
+      : defaultFormat(config.key ? value[config.key] : value, type, meta);
+  };
 
   const options = (inputValue: string) => {
     const initialValues =
@@ -39,8 +93,9 @@ const createOptions = (
 
     let createdOptions: Option[] = initialValues.map((value) => {
       return {
-        label: getLabel(value),
         value: value,
+        label: formatter(value, "label"),
+        text: formatter(value, "text"),
         disabled: config.disable(value),
       };
     });
@@ -49,10 +104,12 @@ const createOptions = (
       if (typeof config.filterable === "function") {
         createdOptions = config.filterable(inputValue, createdOptions);
       } else {
-        createdOptions = fuzzySort(inputValue, createdOptions, "label").map(
+        createdOptions = fuzzySort(inputValue, createdOptions, "text").map(
           (result) => ({
             ...result.item,
-            label: fuzzyHighlight(result),
+            label: formatter(result.item.value, "label", {
+              highlight: fuzzyHighlight(result),
+            }),
           }),
         );
       }
@@ -61,7 +118,7 @@ const createOptions = (
     if (config.createable !== undefined) {
       const trimmedValue = inputValue.trim();
       const exists = createdOptions.some((option) =>
-        areEqualIgnoringCase(inputValue, getLabel(option.value)),
+        areEqualIgnoringCase(inputValue, option.text),
       );
 
       if (trimmedValue && !exists) {
@@ -69,16 +126,16 @@ const createOptions = (
         if (typeof config.createable === "function") {
           value = config.createable(trimmedValue);
         } else {
-          value = config.key ? { [config.key]: trimmedValue } : trimmedValue;
+          value =
+            config.key && !config.format
+              ? { [config.key]: trimmedValue }
+              : trimmedValue;
         }
 
-        const option = {
-          label: (
-            <>
-              Create <mark>{getLabel(value)}</mark>
-            </>
-          ),
+        const option: Option = {
           value,
+          label: formatter(value, "label", { prefix: "Create " }),
+          text: formatter(value, "text"),
           disabled: false,
         };
         createdOptions = [...createdOptions, option];
@@ -91,7 +148,7 @@ const createOptions = (
   const optionToValue = (option: Option) => option.value;
 
   const format = (item: Option | Value, type: "option" | "value") =>
-    type === "option" ? item.label : getLabel(item);
+    type === "option" ? item.label : formatter(item, "value");
 
   const isOptionDisabled = (option: Option) => option.disabled;
 

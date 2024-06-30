@@ -105,7 +105,7 @@
 .solid-select-option[data-focused="true"] {
   background-color: rgb(243, 244, 246);
 }
-.solid-select-option > mark {
+.solid-select-option mark {
   background-color: unset;
   color: unset;
   text-decoration-line: underline;
