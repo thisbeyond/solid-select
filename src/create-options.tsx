@@ -49,7 +49,9 @@ type CreateOptionsConfig = (
     }
 ) & {
   filterable?: boolean | ((inputValue: string, options: Option[]) => Option[]);
-  createable?: boolean | ((inputValue: string) => Value);
+  createable?:
+    | boolean
+    | ((inputValue: string, exists: boolean, options: Option[]) => Value);
   disable?: (value: Value) => boolean;
 };
 
@@ -70,6 +72,18 @@ const createOptions = (
   if (config.key && config.format) {
     console.warn(
       "The 'key' option is ignored when 'format' option is specified.",
+    );
+  }
+
+  if (
+    typeof config.createable === "function" &&
+    config.createable.length === 1
+  ) {
+    console.warn(
+      'Outdated "createable" function signature detected.',
+      'Will only call if no option alredy "exists" as a result.',
+      'Please update function to accept "exists" as second parameter',
+      'and return "undefined" to prevent adding a create option.',
     );
   }
 
@@ -121,24 +135,33 @@ const createOptions = (
         areEqualIgnoringCase(inputValue, option.text),
       );
 
-      if (trimmedValue && !exists) {
+      if (trimmedValue) {
         let value: Value;
+
         if (typeof config.createable === "function") {
-          value = config.createable(trimmedValue);
-        } else {
+          if (config.createable.length === 1) {
+            if (!exists) {
+              value = config.createable(trimmedValue, exists, createdOptions);
+            }
+          } else {
+            value = config.createable(trimmedValue, exists, createdOptions);
+          }
+        } else if (!exists) {
           value =
             config.key && !config.format
               ? { [config.key]: trimmedValue }
               : trimmedValue;
         }
 
-        const option: Option = {
-          value,
-          label: formatter(value, "label", { prefix: "Create " }),
-          text: formatter(value, "text"),
-          disabled: false,
-        };
-        createdOptions = [...createdOptions, option];
+        if (value !== undefined) {
+          const option: Option = {
+            value,
+            label: formatter(value, "label", { prefix: "Create " }),
+            text: formatter(value, "text"),
+            disabled: false,
+          };
+          createdOptions = [...createdOptions, option];
+        }
       }
     }
 
