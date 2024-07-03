@@ -51,7 +51,11 @@ type CreateOptionsConfig = (
   filterable?: boolean | ((inputValue: string, options: Option[]) => Option[]);
   createable?:
     | boolean
-    | ((inputValue: string, exists: boolean, options: Option[]) => Value);
+    | ((
+        inputValue: string,
+        exists: boolean,
+        options: Option[],
+      ) => Value | Value[]);
   disable?: (value: Value) => boolean;
 };
 
@@ -136,31 +140,47 @@ const createOptions = (
       );
 
       if (trimmedValue) {
-        let value: Value;
+        let valueOrValues: Value | Value[] | undefined;
 
         if (typeof config.createable === "function") {
           if (config.createable.length === 1) {
             if (!exists) {
-              value = config.createable(trimmedValue, exists, createdOptions);
+              valueOrValues = config.createable(
+                trimmedValue,
+                exists,
+                createdOptions,
+              );
             }
           } else {
-            value = config.createable(trimmedValue, exists, createdOptions);
+            valueOrValues = config.createable(
+              trimmedValue,
+              exists,
+              createdOptions,
+            );
           }
         } else if (!exists) {
-          value =
+          valueOrValues =
             config.key && !config.format
               ? { [config.key]: trimmedValue }
               : trimmedValue;
         }
 
-        if (value !== undefined) {
-          const option: Option = {
-            value,
-            label: formatter(value, "label", { prefix: "Create " }),
-            text: formatter(value, "text"),
-            disabled: false,
-          };
-          createdOptions = [...createdOptions, option];
+        if (valueOrValues !== undefined) {
+          const values = Array.isArray(valueOrValues)
+            ? valueOrValues
+            : [valueOrValues];
+
+          const optionsToAdd: Option[] = [];
+          for (const value of values) {
+            optionsToAdd.push({
+              value: value,
+              label: formatter(value, "label", { prefix: "Create " }),
+              text: formatter(value, "text"),
+              disabled: false,
+            });
+          }
+
+          createdOptions = [...createdOptions, ...optionsToAdd];
         }
       }
     }
