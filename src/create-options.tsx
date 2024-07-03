@@ -5,11 +5,9 @@ import { fuzzyHighlight, fuzzySort } from "./fuzzy";
 
 type Values = Value[];
 
-type NonNullJSXElement = Exclude<JSXElement, null | undefined>;
-
 interface Option {
   value: Value;
-  label: NonNullJSXElement;
+  label: JSXElement;
   text: string;
   disabled: boolean;
 }
@@ -20,7 +18,7 @@ type CreateOptionsFormat = <T extends CreateOptionsFormatType>(
   value: Value,
   type: T,
   meta: { highlight?: JSXElement; prefix?: string },
-) => T extends "text" ? string : NonNullJSXElement;
+) => T extends "text" ? string : JSXElement;
 
 export const defaultFormat: CreateOptionsFormat = (value, type, meta) => {
   switch (type) {
@@ -95,11 +93,7 @@ const createOptions = (
     value: Value,
     type: T,
     meta?: { highlight?: JSXElement; prefix?: string },
-  ) => T extends "text" ? string : NonNullJSXElement = (
-    value,
-    type,
-    meta = {},
-  ) => {
+  ) => T extends "text" ? string : JSXElement = (value, type, meta = {}) => {
     return config.format
       ? config.format(value, type, meta)
       : defaultFormat(config.key ? value[config.key] : value, type, meta);
