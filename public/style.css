@@ -1,32 +1,34 @@
+.solid-select-container * {
+  box-sizing: border-box;
+  border: 0px solid transparent;
+}
 .solid-select-container[data-disabled="true"] {
   pointer-events: none;
 }
 .solid-select-container {
   position: relative;
+  background-color: rgb(255, 255, 255);
+  box-sizing: border-box;
+  border-radius: 0.25rem;
+  min-width: 5rem;
+}
+.solid-select-control {
+  border: 1px solid rgb(229, 231, 235);
+  border-radius: inherit;
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  padding: 0.25rem 0.5rem;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
 }
 .solid-select-control[data-disabled="true"] {
   background-color: rgb(243, 244, 246);
   border-color: rgb(209, 213, 219);
 }
-.solid-select-control {
-  border-color: rgb(229, 231, 235);
-  border-radius: 0.25rem;
-  border-width: 1px;
-  display: grid;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
-  line-height: 1.5;
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
-  outline: 2px solid transparent;
-  outline-offset: 2px;
-}
 .solid-select-control[data-multiple="true"][data-has-value="true"] {
   display: flex;
   flex-wrap: wrap;
   align-items: stretch;
-  grid-gap: 0.25rem;
   gap: 0.25rem;
 }
 .solid-select-control:focus-within {
@@ -40,6 +42,9 @@
 .solid-select-single-value {
   grid-column-start: 1;
   grid-row-start: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .solid-select-multi-value {
   background-color: rgb(243, 244, 246);
@@ -47,10 +52,14 @@
   display: flex;
   align-items: center;
   font-size: 85%;
-  line-height: 1;
-  line-height: inherit;
   padding-left: 4px;
   padding-right: 4px;
+  min-width: 20px;
+}
+.solid-select-multi-value > span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .solid-select-multi-value-remove {
   padding-left: 0.25rem;
@@ -87,7 +96,7 @@
   border-radius: 0.125rem;
   margin-top: 0.25rem;
   max-height: 50vh;
-  min-width: 100%;
+  width: 100%;
   overflow-y: auto;
   padding: 0.5rem;
   position: absolute;
@@ -96,7 +105,6 @@
     0 0 #0000,
     0 10px 15px -3px rgb(0 0 0/0.1),
     0 4px 6px -4px rgb(0 0 0/0.1);
-  white-space: nowrap;
   z-index: 1;
 }
 .solid-select-option:hover {
@@ -112,10 +120,7 @@
 }
 .solid-select-option {
   cursor: default;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
+  padding: 0.5rem 1rem;
   user-select: none;
 }
 .solid-select-option[data-disabled="true"] {
@@ -124,9 +129,6 @@
 }
 .solid-select-list-placeholder {
   cursor: default;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
+  padding: 0.5rem 1rem;
   user-select: none;
 }

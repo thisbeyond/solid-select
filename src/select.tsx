@@ -186,7 +186,7 @@ const MultiValue: ParentComponent<{ onRemove: () => void }> = (props) => {
 
   return (
     <div class="solid-select-multi-value">
-      {props.children}
+      <span>{props.children}</span>
       <button
         type="button"
         class="solid-select-multi-value-remove"
