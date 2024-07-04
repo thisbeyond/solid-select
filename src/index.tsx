@@ -15,3 +15,10 @@ export {
   SelectContext,
   useSelect,
 } from "./select";
+export type { CreateSelectOption, CreateSelectValue } from "./create-select";
+export type {
+  CreateOptionsOption,
+  CreateOptionsFormatFunction,
+  CreateOptionsFilterableFunction,
+  CreateOptionsCreateableFunction,
+} from "./create-options";

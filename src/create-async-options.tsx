@@ -1,10 +1,10 @@
 import { createSignal, createResource, getOwner, onCleanup } from "solid-js";
 
-import { Option } from "./create-select";
+import { CreateSelectOption } from "./create-select";
 
 const createAsyncOptions = (
-  fetcher: (inputValue: string) => Promise<Option[]>,
-  timeout = 250
+  fetcher: (inputValue: string) => Promise<CreateSelectOption[]>,
+  timeout = 250,
 ) => {
   const [inputValue, setInputValue] = createSignal("");
   const throttledFetcher = throttle(fetcher, timeout);

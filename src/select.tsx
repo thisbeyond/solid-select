@@ -14,14 +14,14 @@ import {
 } from "solid-js";
 import {
   createSelect,
-  Option as OptionType,
-  Value as ValueType,
+  CreateSelectOption,
+  CreateSelectValue,
   CreateSelectProps,
 } from "./create-select";
 
 interface CommonProps {
   format: (
-    data: OptionType | ValueType,
+    data: CreateSelectOption | CreateSelectValue,
     type: "option" | "value",
   ) => JSXElement | undefined;
   placeholder?: string;
@@ -271,7 +271,7 @@ const List: Component<ListProps> = (props) => {
               </div>
             }
           >
-            {(option: OptionType) => (
+            {(option: CreateSelectOption) => (
               <Option option={option}>{props.format(option, "option")}</Option>
             )}
           </For>
@@ -282,7 +282,7 @@ const List: Component<ListProps> = (props) => {
 };
 
 type OptionProps = {
-  option: OptionType;
+  option: CreateSelectOption;
 };
 
 const Option: ParentComponent<OptionProps> = (props) => {

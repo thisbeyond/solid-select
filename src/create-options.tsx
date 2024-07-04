@@ -1,30 +1,45 @@
 import { JSXElement } from "solid-js";
 
-import { Value } from "./create-select";
+import { CreateSelectValue } from "./create-select";
 import { fuzzyHighlight, fuzzySort } from "./fuzzy";
 
-type Values = Value[];
-
-interface Option {
-  value: Value;
+interface CreateOptionsOption {
+  value: CreateSelectValue;
   label: JSXElement;
   text: string;
   disabled: boolean;
 }
 
-type CreateOptionsFormatType = "value" | "label" | "text";
+type CreateOptionsFilterableFunction = (
+  inputValue: string,
+  options: CreateOptionsOption[],
+) => CreateOptionsOption[];
 
-type CreateOptionsFormat = <T extends CreateOptionsFormatType>(
-  value: Value,
-  type: T,
+type CreateOptionsCreateableFunction = (
+  inputValue: string,
+  exists: boolean,
+  options: CreateOptionsOption[],
+) => CreateSelectValue | CreateSelectValue[];
+
+type CreateOptionsFormatFunction = <Type extends "value" | "label" | "text">(
+  value: CreateSelectValue,
+  type: Type,
   meta: { highlight?: JSXElement; prefix?: string },
-) => T extends "text" ? string : JSXElement;
+) => Type extends "text" ? string : JSXElement;
 
-export const defaultFormat: CreateOptionsFormat = (value, type, meta) => {
+const hasToString = (value: any): value is { toString: () => string } =>
+  typeof value.toString === "function";
+
+const defaultFormat: CreateOptionsFormatFunction = (value, type, meta) => {
   switch (type) {
     case "value":
       return value;
     case "text":
+      if (!hasToString(value)) {
+        throw new Error(
+          "Value must have a 'toString' method for text extraction.",
+        );
+      }
       return value.toString();
     case "label":
       return (
@@ -42,23 +57,17 @@ type CreateOptionsConfig = (
       format?: never;
     }
   | {
-      format?: CreateOptionsFormat;
+      format?: CreateOptionsFormatFunction;
       key?: never;
     }
 ) & {
-  filterable?: boolean | ((inputValue: string, options: Option[]) => Option[]);
-  createable?:
-    | boolean
-    | ((
-        inputValue: string,
-        exists: boolean,
-        options: Option[],
-      ) => Value | Value[]);
-  disable?: (value: Value) => boolean;
+  filterable?: boolean | CreateOptionsFilterableFunction;
+  createable?: boolean | CreateOptionsCreateableFunction;
+  disable?: (value: CreateSelectValue) => boolean;
 };
 
 const createOptions = (
-  values: Values | ((inputValue: string) => Values),
+  values: CreateSelectValue[] | ((inputValue: string) => CreateSelectValue[]),
   userConfig?: CreateOptionsConfig,
 ) => {
   const config: CreateOptionsConfig &
@@ -89,11 +98,11 @@ const createOptions = (
     );
   }
 
-  const formatter: <T extends CreateOptionsFormatType>(
-    value: Value,
-    type: T,
-    meta?: { highlight?: JSXElement; prefix?: string },
-  ) => T extends "text" ? string : JSXElement = (value, type, meta = {}) => {
+  const formatter: CreateOptionsFormatFunction = (
+    value,
+    type,
+    meta: { highlight?: JSXElement; prefix?: string },
+  ) => {
     return config.format
       ? config.format(value, type, meta)
       : defaultFormat(config.key ? value[config.key] : value, type, meta);
@@ -103,11 +112,11 @@ const createOptions = (
     const initialValues =
       typeof values === "function" ? values(inputValue) : values;
 
-    let createdOptions: Option[] = initialValues.map((value) => {
+    let createdOptions: CreateOptionsOption[] = initialValues.map((value) => {
       return {
         value: value,
-        label: formatter(value, "label"),
-        text: formatter(value, "text"),
+        label: formatter(value, "label", {}),
+        text: formatter(value, "text", {}),
         disabled: config.disable(value),
       };
     });
@@ -134,7 +143,7 @@ const createOptions = (
       );
 
       if (trimmedValue) {
-        let valueOrValues: Value | Value[] | undefined;
+        let valueOrValues: CreateSelectValue | CreateSelectValue[] | undefined;
 
         if (typeof config.createable === "function") {
           if (config.createable.length === 1) {
@@ -164,12 +173,12 @@ const createOptions = (
             ? valueOrValues
             : [valueOrValues];
 
-          const optionsToAdd: Option[] = [];
+          const optionsToAdd: CreateOptionsOption[] = [];
           for (const value of values) {
             optionsToAdd.push({
               value: value,
               label: formatter(value, "label", { prefix: "Create " }),
-              text: formatter(value, "text"),
+              text: formatter(value, "text", {}),
               disabled: false,
             });
           }
@@ -182,12 +191,17 @@ const createOptions = (
     return createdOptions;
   };
 
-  const optionToValue = (option: Option) => option.value;
+  const optionToValue = (option: CreateOptionsOption) => option.value;
 
-  const format = (item: Option | Value, type: "option" | "value") =>
-    type === "option" ? item.label : formatter(item, "value");
+  const format = (
+    item: CreateOptionsOption | CreateSelectValue,
+    type: "option" | "value",
+  ) =>
+    type === "option"
+      ? (item as CreateOptionsOption).label
+      : formatter(item, "value", {});
 
-  const isOptionDisabled = (option: Option) => option.disabled;
+  const isOptionDisabled = (option: CreateOptionsOption) => option.disabled;
 
   return {
     options,
@@ -202,4 +216,10 @@ const areEqualIgnoringCase = (firstString: string, secondString: string) =>
     sensitivity: "base",
   }) === 0;
 
-export { createOptions };
+export { createOptions, defaultFormat, areEqualIgnoringCase };
+export type {
+  CreateOptionsOption,
+  CreateOptionsFormatFunction,
+  CreateOptionsFilterableFunction,
+  CreateOptionsCreateableFunction,
+};

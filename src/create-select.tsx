@@ -6,20 +6,22 @@ import {
   on,
 } from "solid-js";
 
-type Option = any;
+type CreateSelectOption = any;
 
-type SingleValue = any;
+type CreateSelectSingleValue = any;
 
-type Value = SingleValue | SingleValue[];
+type CreateSelectValue = CreateSelectSingleValue | CreateSelectSingleValue[];
 
 interface CreateSelectProps {
-  options: Option[] | ((inputValue: string) => Option[]);
-  initialValue?: Value;
+  options:
+    | CreateSelectOption[]
+    | ((inputValue: string) => CreateSelectOption[]);
+  initialValue?: CreateSelectValue;
   multiple?: boolean;
   disabled?: boolean;
-  optionToValue?: (option: Option) => SingleValue;
-  isOptionDisabled?: (option: Option) => boolean;
-  onChange?: (value: Value) => void;
+  optionToValue?: (option: CreateSelectOption) => CreateSelectSingleValue;
+  isOptionDisabled?: (option: CreateSelectOption) => boolean;
+  onChange?: (value: CreateSelectValue) => void;
   onInput?: (inputValue: string) => void;
 }
 
@@ -28,13 +30,14 @@ const createSelect = (props: CreateSelectProps) => {
     {
       multiple: false,
       disabled: false,
-      optionToValue: (option: Option): SingleValue => option,
-      isOptionDisabled: (option: Option) => false,
+      optionToValue: (option: CreateSelectOption): CreateSelectSingleValue =>
+        option,
+      isOptionDisabled: (option: CreateSelectOption) => false,
     },
-    props
+    props,
   );
 
-  const parseValue = (value: Value) => {
+  const parseValue = (value: CreateSelectValue) => {
     if (config.multiple && Array.isArray(value)) {
       return value;
     } else if (!config.multiple && !Array.isArray(value)) {
@@ -43,17 +46,17 @@ const createSelect = (props: CreateSelectProps) => {
       throw new Error(
         `Incompatible value type for ${
           config.multiple ? "multple" : "single"
-        } select.`
+        } select.`,
       );
     }
   };
 
   const [_value, _setValue] = createSignal(
-    config.initialValue !== undefined ? parseValue(config.initialValue) : []
+    config.initialValue !== undefined ? parseValue(config.initialValue) : [],
   );
 
   const value = () => (config.multiple ? _value() : _value()[0] || null);
-  const setValue = (value: Value) => _setValue(parseValue(value));
+  const setValue = (value: CreateSelectValue) => _setValue(parseValue(value));
   const clearValue = () => _setValue([]);
   const hasValue = () => !!(config.multiple ? value().length : value());
 
@@ -66,7 +69,7 @@ const createSelect = (props: CreateSelectProps) => {
   createEffect(
     on(inputValue, (inputValue) => config.onInput?.(inputValue), {
       defer: true,
-    })
+    }),
   );
 
   createEffect(
@@ -77,20 +80,20 @@ const createSelect = (props: CreateSelectProps) => {
           setIsOpen(true);
         }
       },
-      { defer: true }
-    )
+      { defer: true },
+    ),
   );
 
   const options =
     typeof config.options === "function"
       ? createMemo(
           () => (config.options as Function)(inputValue()),
-          config.options(inputValue())
+          config.options(inputValue()),
         )
       : () => config.options;
   const optionsCount = () => options().length;
 
-  const pickOption = (option: Option) => {
+  const pickOption = (option: CreateSelectOption) => {
     if (config.isOptionDisabled(option)) return;
 
     const value = config.optionToValue(option);
@@ -110,7 +113,8 @@ const createSelect = (props: CreateSelectProps) => {
   const [focusedOptionIndex, setFocusedOptionIndex] = createSignal(-1);
 
   const focusedOption = () => options()[focusedOptionIndex()];
-  const isOptionFocused = (option: Option) => option === focusedOption();
+  const isOptionFocused = (option: CreateSelectOption) =>
+    option === focusedOption();
 
   const focusOption = (direction: "next" | "previous") => {
     if (!optionsCount()) setFocusedOptionIndex(-1);
@@ -136,8 +140,8 @@ const createSelect = (props: CreateSelectProps) => {
       (options) => {
         if (isOpen()) setFocusedOptionIndex(Math.min(0, options.length - 1));
       },
-      { defer: true }
-    )
+      { defer: true },
+    ),
   );
 
   createEffect(
@@ -147,8 +151,8 @@ const createSelect = (props: CreateSelectProps) => {
         if (isDisabled && isOpen()) {
           setIsOpen(false);
         }
-      }
-    )
+      },
+    ),
   );
 
   createEffect(
@@ -163,8 +167,8 @@ const createSelect = (props: CreateSelectProps) => {
           setInputValue("");
         }
       },
-      { defer: true }
-    )
+      { defer: true },
+    ),
   );
 
   createEffect(
@@ -175,8 +179,8 @@ const createSelect = (props: CreateSelectProps) => {
           setIsOpen(true);
         }
       },
-      { defer: true }
-    )
+      { defer: true },
+    ),
   );
 
   const onFocusIn = () => setIsActive(true);
@@ -220,7 +224,7 @@ const createSelect = (props: CreateSelectProps) => {
           return;
         }
         if (config.multiple) {
-          const currentValue = value() as SingleValue[];
+          const currentValue = value() as CreateSelectSingleValue[];
           setValue([...currentValue.slice(0, -1)]);
         } else {
           clearValue();
@@ -285,4 +289,9 @@ const createSelect = (props: CreateSelectProps) => {
 };
 
 export { createSelect };
-export type { CreateSelectProps, SingleValue, Value, Option };
+export type {
+  CreateSelectProps,
+  CreateSelectSingleValue,
+  CreateSelectValue,
+  CreateSelectOption,
+};
