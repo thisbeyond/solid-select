@@ -133,3 +133,4 @@ const fuzzySort = (
 };
 
 export { fuzzySort, fuzzySearch, fuzzyHighlight };
+export type { FuzzySearchResult, FuzzySortResult };

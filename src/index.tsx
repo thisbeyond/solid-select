@@ -22,3 +22,4 @@ export type {
   CreateOptionsFilterableFunction,
   CreateOptionsCreateableFunction,
 } from "./create-options";
+export type { FuzzySearchResult, FuzzySortResult } from "./fuzzy";
