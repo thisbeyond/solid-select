@@ -1,5 +1,102 @@
 # Changelog
 
+## [Unreleased]
+
+A focus on improving the ergonomics of `createOptions` to cover more use cases
+whilst maintaining a good level of opinionated sensible defaults. Check out the
+updated https://solid-select.com for examples of the new behaviour in action.
+
+### Added
+
+- Support passing a `ref` to `Select`. Useful for explicitly controlling focus
+  on the control. Passed down to `input` rather than control/container as the
+  input is the focusable element.
+
+- Add ability to customise filtering logic by passing a function as `filterable`
+  parameter for `createOptions`.
+
+- Support custom formatting in `createOptions` by passing a `format` function as
+  a new parameter. This can be used to control the created option labels as well
+  as how the value is displayed when selected.
+
+  As part of this, metadata is also passed to the `format` function to allow
+  customising aspects that were previously hardcoded (such as the "Create"
+  string when `creatable` is used or the highlighted elements from
+  `filterable`).
+
+  It is now possible to fully localise all text using this approach as well as
+  mix highlighted text with other option elements (such as icons) for a richer
+  filtering experience.
+
+  A `defaultFormat` function is also exported for reuse / blending into custom
+  logic.
+
+- Add control over how text is extracted from an option's value in
+  `createOptions`. Pass a custom `extractText` function to handle the
+  extraction. It's result will be stored on the option under the `text`
+  parameter and then used for existence comparison as well as filtering
+  comparison.
+
+- Support returning an array of options from `createable` in `createOptions` for
+  cases where multiple options might be candidates for creation from a single
+  input string.
+
+### Changed
+
+- Move to custom `createable` function in `createOptions` the decision on when
+  to show a "create" option based on existing options.
+
+  As a convenience, the `createable` function will be passed an `exists` boolean
+  parameter (computed by checking the extracted text of each option against the
+  current input string), but it will be up to the `createable` function what to
+  do with this. In other words, the `createable` function will now _always_ be
+  called on input value change, whereas previously it was only called if the
+  exist check passed internally. The function is also passed the current options
+  to be displayed if custom checks are desired.
+
+  The `creatable` function can then return `undefined` (or an empty list) to
+  prevent a "create" option being added.
+
+  To avoid this being a backwards incompatible change that could cause
+  unintended issues (duplicate values being created), solid-select will attempt
+  to detect if the `createable` function passed has been updated to accept the
+  new `exists` parameter. If it hasn't, then a warning is issued and the exist
+  check internally will prevent calling the function.
+
+- Pass `disable` function on `createOptions` the keyed value rather than full
+  object when a `key` parameter is also supplied.
+
+- Improve out-of-the-box styling so that `Select` renders nicer without
+  customisation. For example, background colour of select and option list now
+  defaults to white and children of select have sensible border and sizing
+  defaults.
+
+- Support extracting `fuzzySort` target ("key") via function. Useful when a
+  consumer wants to sort on a nested key directly rather than use the extracted
+  text of an option.
+
+- Attempt to improve typings and make more explicit the differntiation between
+  different similarly named types (e.g. the `Select` option and `createOptions`
+  option). Some of these typing are not also exported for direct reuse.
+
+- Modernise tooling for library build and packaging. Notably use pnpm as default
+  packagae manager, switch from rollup to tsup for builds, drop commonjs support
+  and use plain CSS rather than unnecessarily generate `style.css` through the
+  now sunsetted windicss tool.
+
+### Fixed
+
+- Fix some styling issues such as focus outlines not being properly applied and
+  border radius being clipped by container.
+
+- Update typings to correctly represent the supported functionality of returning
+  elements from a custom `format` function. Thanks to
+  [LouisLuBrain](https://github.com/LouisLuBrain) for the fix.
+
+- Avoid Apple devices stealing focus through autocorrect suggestions by setting
+  `autoCorrect` to `off` on `Input` component. Thanks to
+  [MaAlkhalaf](https://github.com/MaAlkhalaf) for the fix.
+
 ## [0.14.0] - 2023-04-09
 
 A major refactor to more clearly separate out the core and the builtin
