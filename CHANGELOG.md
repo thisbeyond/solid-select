@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [0.15.0] - 2024-07-06
 
 A focus on improving the ergonomics of `createOptions` to cover more use cases
 whilst maintaining a good level of opinionated sensible defaults. Check out the
@@ -458,8 +458,9 @@ Initial release featuring core create select logic, accompanying component
 blocks and a composed component for convenience.
 
 <!-- prettier-ignore -->
-[unreleased]: https://github.com/thisbeyond/solid-select/compare/0.14.0...HEAD
+[unreleased]: https://github.com/thisbeyond/solid-select/compare/0.15.0...HEAD
 
+[0.15.0]: https://github.com/thisbeyond/solid-select/compare/0.14.0...0.15.0
 [0.14.0]: https://github.com/thisbeyond/solid-select/compare/0.13.0...0.14.0
 [0.13.0]: https://github.com/thisbeyond/solid-select/compare/0.12.0...0.13.0
 [0.12.0]: https://github.com/thisbeyond/solid-select/compare/0.11.0...0.12.0
