@@ -1,6 +1,7 @@
 .solid-select-container * {
   box-sizing: border-box;
   border: 0px solid transparent;
+  line-height: normal;
 }
 .solid-select-container[data-disabled="true"] {
   pointer-events: none;
