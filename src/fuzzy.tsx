@@ -108,13 +108,18 @@ const fuzzyHighlight = (
 const fuzzySort = (
   value: string,
   items: any[],
-  key?: string
+  key?: string | ((item: any) => any),
 ): FuzzySortResult => {
   const sorted = [];
 
   for (let index = 0; index < items.length; index++) {
     const item = items[index];
-    const target = key ? item[key] : item;
+    const target = key
+      ? typeof key === "function"
+        ? key(item)
+        : item[key]
+      : item;
+
     const result = fuzzySearch(value, target);
     if (result.score) {
       sorted.push({ ...result, item, index });
