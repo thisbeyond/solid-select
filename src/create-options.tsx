@@ -21,68 +21,57 @@ type CreateOptionsCreateableFunction = (
   options: CreateOptionsOption[],
 ) => CreateSelectValue | CreateSelectValue[];
 
-type CreateOptionsFormatFunction = <Type extends "value" | "label" | "text">(
+type CreateOptionsFormatFunction = (
   value: CreateSelectValue,
-  type: Type,
+  type: "value" | "label",
   meta: { highlight?: JSXElement; prefix?: string },
-) => Type extends "text" ? string : JSXElement;
+) => JSXElement;
 
-const hasToString = (value: any): value is { toString: () => string } =>
-  typeof value.toString === "function";
+const defaultFormat: CreateOptionsFormatFunction = (value, type, meta) =>
+  type === "label" ? (
+    <>
+      {meta.prefix}
+      {meta.highlight ?? value}
+    </>
+  ) : (
+    value
+  );
 
-const defaultFormat: CreateOptionsFormatFunction = (value, type, meta) => {
-  switch (type) {
-    case "value":
-      return value;
-    case "text":
-      if (!hasToString(value)) {
-        throw new Error(
-          "Value must have a 'toString' method for text extraction.",
-        );
-      }
-      return value.toString();
-    case "label":
-      return (
-        <>
-          {meta?.prefix}
-          {meta?.highlight ?? value}
-        </>
-      );
-  }
-};
-
-type CreateOptionsConfig = (
-  | {
-      key?: string;
-      format?: never;
-    }
-  | {
-      format?: CreateOptionsFormatFunction;
-      key?: never;
-    }
-) & {
+interface CreateOptionsConfig {
+  key?: string;
+  format?: CreateOptionsFormatFunction;
   filterable?: boolean | CreateOptionsFilterableFunction;
   createable?: boolean | CreateOptionsCreateableFunction;
+  extractText?: (value: CreateSelectValue) => string;
   disable?: (value: CreateSelectValue) => boolean;
-};
+}
 
 const createOptions = (
   values: CreateSelectValue[] | ((inputValue: string) => CreateSelectValue[]),
   userConfig?: CreateOptionsConfig,
 ) => {
   const config: CreateOptionsConfig &
-    Required<Pick<CreateOptionsConfig, "filterable" | "disable">> =
-    Object.assign(
-      {
-        filterable: true,
-        disable: () => false,
-      },
-      userConfig || {},
-    );
+    Required<
+      Pick<CreateOptionsConfig, "extractText" | "filterable" | "disable">
+    > = Object.assign(
+    {
+      extractText: (value: CreateSelectValue) =>
+        value.toString ? value.toString() : value,
+      filterable: true,
+      disable: () => false,
+    },
+    userConfig || {},
+  );
 
-  if (config.key && config.format) {
+  if (
+    config.key &&
+    userConfig &&
+    (userConfig.format || userConfig.disable || userConfig.extractText)
+  ) {
     console.warn(
-      "The 'key' option is ignored when 'format' option is specified.",
+      "When 'key' option is specified, custom 'format', 'disable' and",
+      "'extractText' functions will receive the keyed value rather than the",
+      "full object.",
     );
   }
 
@@ -98,15 +87,21 @@ const createOptions = (
     );
   }
 
-  const formatter: CreateOptionsFormatFunction = (
-    value,
-    type,
-    meta: { highlight?: JSXElement; prefix?: string },
-  ) => {
+  const resolveValue = (value: CreateSelectValue) =>
+    config.key ? value[config.key] : value;
+
+  const extractText = (value: CreateSelectValue) =>
+    config.extractText(resolveValue(value));
+
+  const format: CreateOptionsFormatFunction = (value, type, meta) => {
+    const resolvedValue = resolveValue(value);
     return config.format
-      ? config.format(value, type, meta)
-      : defaultFormat(config.key ? value[config.key] : value, type, meta);
+      ? config.format(resolvedValue, type, meta)
+      : defaultFormat(resolvedValue, type, meta);
   };
+
+  const disable = (value: CreateSelectValue) =>
+    config.disable(resolveValue(value));
 
   const options = (inputValue: string) => {
     const initialValues =
@@ -114,10 +109,10 @@ const createOptions = (
 
     let createdOptions: CreateOptionsOption[] = initialValues.map((value) => {
       return {
-        value: value,
-        label: formatter(value, "label", {}),
-        text: formatter(value, "text", {}),
-        disabled: config.disable(value),
+        value,
+        label: format(value, "label", {}),
+        text: extractText(value),
+        disabled: disable(value),
       };
     });
 
@@ -128,7 +123,7 @@ const createOptions = (
         createdOptions = fuzzySort(inputValue, createdOptions, "text").map(
           (result) => ({
             ...result.item,
-            label: formatter(result.item.value, "label", {
+            label: format(result.item.value, "label", {
               highlight: fuzzyHighlight(result),
             }),
           }),
@@ -162,10 +157,9 @@ const createOptions = (
             );
           }
         } else if (!exists) {
-          valueOrValues =
-            config.key && !config.format
-              ? { [config.key]: trimmedValue }
-              : trimmedValue;
+          valueOrValues = config.key
+            ? { [config.key]: trimmedValue }
+            : trimmedValue;
         }
 
         if (valueOrValues !== undefined) {
@@ -177,8 +171,8 @@ const createOptions = (
           for (const value of values) {
             optionsToAdd.push({
               value: value,
-              label: formatter(value, "label", { prefix: "Create " }),
-              text: formatter(value, "text", {}),
+              label: format(value, "label", { prefix: "Create " }),
+              text: extractText(value),
               disabled: false,
             });
           }
@@ -191,23 +185,17 @@ const createOptions = (
     return createdOptions;
   };
 
-  const optionToValue = (option: CreateOptionsOption) => option.value;
-
-  const format = (
-    item: CreateOptionsOption | CreateSelectValue,
-    type: "option" | "value",
-  ) =>
-    type === "option"
-      ? (item as CreateOptionsOption).label
-      : formatter(item, "value", {});
-
-  const isOptionDisabled = (option: CreateOptionsOption) => option.disabled;
-
   return {
     options,
-    optionToValue,
-    isOptionDisabled,
-    format,
+    optionToValue: (option: CreateOptionsOption) => option.value,
+    isOptionDisabled: (option: CreateOptionsOption) => option.disabled,
+    format: (
+      item: CreateOptionsOption | CreateSelectValue,
+      type: "option" | "value",
+    ) =>
+      type === "option"
+        ? (item as CreateOptionsOption).label
+        : format(item as CreateSelectValue, "value", {}),
   };
 };
 
