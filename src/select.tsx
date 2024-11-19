@@ -11,6 +11,7 @@ import {
   useContext,
   JSXElement,
   Ref,
+  onMount,
 } from "solid-js";
 import {
   createSelect,
@@ -65,6 +66,7 @@ const Select: Component<SelectProps> = (props) => {
       "options",
       "optionToValue",
       "isOptionDisabled",
+      "isOptionSelected",
       "multiple",
       "disabled",
       "onInput",
@@ -129,6 +131,14 @@ type ControlProps = Omit<CommonProps, "class">;
 
 const Control: Component<ControlProps> = (props) => {
   const select = useSelect();
+
+  createEffect(on(select.options, () => {
+      select.options().forEach((option: any) => {
+        if (select.isOptionSelected(option)) {
+            select.addSelectedOption(option);
+        }
+      });
+  }));
 
   const removeValue = (index: number) => {
     const value = select.value();
@@ -252,6 +262,14 @@ type ListProps = Pick<
 const List: Component<ListProps> = (props) => {
   const select = useSelect();
 
+  const addSelectedOption = (option: CreateSelectOption) => {
+      if (select.multiple) {
+          select.setValue([...select.value(), option]);
+      } else  {
+          select.setValue(option);
+      }
+  }
+
   return (
     <Show when={select.isOpen()}>
       <div class="solid-select-list">
@@ -295,11 +313,13 @@ const Option: ParentComponent<OptionProps> = (props) => {
       }
     });
   };
+
   return (
     <div
       ref={scrollIntoViewOnFocus}
       data-disabled={select.isOptionDisabled(props.option)}
       data-focused={select.isOptionFocused(props.option)}
+      data-selected={select.isOptionSelected(props.option)}
       class="solid-select-option"
       onClick={() => select.pickOption(props.option)}
     >
