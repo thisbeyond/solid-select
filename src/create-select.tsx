@@ -100,12 +100,12 @@ const createSelect = (props: CreateSelectProps) => {
 
     const value = config.optionToValue(option);
     if (config.multiple) {
-      setValue([..._value(), value]);
-      props.onChange?.(_value());
+      setValue([..._value(), option]);
+      props.onChange?.(_value().map(config.optionToValue));
     } else {
-      setValue(value);
+      setValue(option);
       setIsActive(false);
-      props.onChange?.(_value()[0]);
+      props.onChange?.(value);
     }
     setIsOpen(false);
   };
