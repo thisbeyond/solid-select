@@ -20,6 +20,7 @@ interface CreateSelectProps {
   multiple?: boolean;
   disabled?: boolean;
   optionToValue?: (option: CreateSelectOption) => CreateSelectSingleValue;
+  isOptionSelected?: (option: CreateSelectOption) => boolean;
   isOptionDisabled?: (option: CreateSelectOption) => boolean;
   onChange?: (value: CreateSelectValue) => void;
   onInput?: (inputValue: string) => void;
@@ -33,6 +34,7 @@ const createSelect = (props: CreateSelectProps) => {
       optionToValue: (option: CreateSelectOption): CreateSelectSingleValue =>
         option,
       isOptionDisabled: (option: CreateSelectOption) => false,
+      isOptionSelected: (option: CreateSelectOption) => false,
     },
     props,
   );
@@ -40,7 +42,7 @@ const createSelect = (props: CreateSelectProps) => {
   const parseValue = (value: CreateSelectValue) => {
     if (config.multiple && Array.isArray(value)) {
       return value;
-    } else if (!config.multiple && !Array.isArray(value)) {
+    } else if (!config.multiple) {
       return value !== null ? [value] : [];
     } else {
       throw new Error(
@@ -60,7 +62,7 @@ const createSelect = (props: CreateSelectProps) => {
   const clearValue = () => _setValue([]);
   const hasValue = () => !!(config.multiple ? value().length : value());
 
-  createEffect(on(_value, () => config.onChange?.(value()), { defer: true }));
+  // createEffect(on(_value, () => config.onChange?.(value()), { defer: true }));
 
   const [inputValue, setInputValue] = createSignal("");
   const clearInputValue = () => setInputValue("");
@@ -99,9 +101,11 @@ const createSelect = (props: CreateSelectProps) => {
     const value = config.optionToValue(option);
     if (config.multiple) {
       setValue([..._value(), value]);
+      props.onChange?.(_value());
     } else {
       setValue(value);
       setIsActive(false);
+      props.onChange?.(_value()[0]);
     }
     setIsOpen(false);
   };
@@ -133,6 +137,14 @@ const createSelect = (props: CreateSelectProps) => {
 
   const focusPreviousOption = () => focusOption("previous");
   const focusNextOption = () => focusOption("next");
+
+  const addSelectedOption = (option: CreateSelectOption) => {
+      if (config.multiple) {
+          _setValue([..._value(), option]);
+      } else  {
+          _setValue(parseValue(option));
+      }
+  }
 
   createEffect(
     on(
@@ -279,6 +291,8 @@ const createSelect = (props: CreateSelectProps) => {
     pickOption,
     isOptionFocused,
     isOptionDisabled: config.isOptionDisabled,
+    isOptionSelected: config.isOptionSelected,
+    addSelectedOption,
     onFocusIn,
     onFocusOut,
     onMouseDown,
