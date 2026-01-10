@@ -2,3 +2,5 @@ node_modules
 types
 dist
 .vscode
+playwright-report
+test-results
