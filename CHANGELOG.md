@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+
+- Fix a bug where `createOptions` could create duplicate options if the input
+  value had trailing whitespace (e.g. "foo "). The existence check now uses the
+  trimmed input value, consistent with the creation logic.
+
 ## [0.15.0] - 2024-07-06
 
 A focus on improving the ergonomics of `createOptions` to cover more use cases
