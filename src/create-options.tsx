@@ -134,7 +134,7 @@ const createOptions = (
     if (config.createable !== undefined) {
       const trimmedValue = inputValue.trim();
       const exists = createdOptions.some((option) =>
-        areEqualIgnoringCase(inputValue, option.text),
+        areEqualIgnoringCase(trimmedValue, option.text),
       );
 
       if (trimmedValue) {
