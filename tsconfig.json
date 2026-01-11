@@ -11,7 +11,11 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
-    "types": ["vitest/globals", "@testing-library/jest-dom", "node"]
+    "types": ["vitest/globals", "@testing-library/jest-dom", "node"],
+    "baseUrl": ".",
+    "paths": {
+      "@thisbeyond/solid-select": ["./src/index.tsx"]
+    }
   },
   "include": ["src", "playground", "tests"],
   "exclude": ["node_modules"]
