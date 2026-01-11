@@ -7,10 +7,9 @@ export default defineConfig({
   resolve: {
     alias: {
       "@thisbeyond/solid-select": path.resolve(__dirname, "../src/index.tsx"),
-      "~": path.resolve(__dirname, "../src")
     },
   },
   server: {
     port: 3000,
-  }
+  },
 });
