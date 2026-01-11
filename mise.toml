@@ -1,0 +1,45 @@
+[tools]
+node = "lts"
+pnpm = "latest"
+
+[hooks]
+postinstall = 'npx corepack enable'
+
+[env]
+_.path = ['./node_modules/.bin']
+
+[tasks.pnpm-install]
+description = 'Installs dependencies with pnpm'
+run = 'pnpm install'
+sources = ['package.json', 'pnpm-lock.yaml', 'mise.toml']
+outputs = ['node_modules/.pnpm/lock.yaml']
+
+[tasks.build]
+run = 'pnpm run build'
+
+[tasks.dev]
+run = 'pnpm run dev'
+description = "Starts development server"
+
+[tasks.playground]
+run = 'pnpm run dev:playground'
+description = "Starts the playground"
+
+[tasks.update]
+run = 'pnpm update --latest --interactive'
+
+[tasks.test]
+run = 'pnpm run test'
+depends = ['pnpm-install']
+
+[tasks.playwright-install]
+run = 'pnpm exec playwright install'
+description = 'Installs playwright browsers'
+
+[tasks."test:e2e"]
+run = 'pnpm run test:e2e'
+depends = ['pnpm-install', 'playwright-install']
+
+[tasks.release]
+run = 'pnpm run release'
+description = "Release a new version"
