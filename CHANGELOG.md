@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Added
+
+- Add testing infrastructure using Vitest for unit tests and Playwright for
+  end-to-end tests.
+
 ### Fixed
 
 - Fix a bug where `createOptions` could create duplicate options if the input
