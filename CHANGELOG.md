@@ -1,11 +1,26 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- Merge supporting website (hosted at https://solid-select.com) into this
+  repository for easier maintenance. Leverage it also for testing changes to the
+  library. The site can be built and run locally using `mise build:site` and
+  `mise dev:site`.
+
+### Fixed
+
+- Fix duplicate options being suggested for creation when input has trailing
+  spaces and filtering is enabled. Input is now trimmed before filtering to
+  ensure it matches the creation existence check logic.
+
 ## [0.15.1] - 2026-01-11
 
 ### Added
 
 - Add testing infrastructure using Vitest for unit tests and Playwright for
-  end-to-end tests.
+  end-to-end tests. Tests can be run using `mise test` and `mise test:e2e`.
 
 ### Fixed
 
