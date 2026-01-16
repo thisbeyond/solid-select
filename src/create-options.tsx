@@ -104,6 +104,7 @@ const createOptions = (
     config.disable(resolveValue(value));
 
   const options = (inputValue: string) => {
+    const trimmedValue = inputValue.trim();
     const initialValues =
       typeof values === "function" ? values(inputValue) : values;
 
@@ -116,11 +117,11 @@ const createOptions = (
       };
     });
 
-    if (config.filterable && inputValue) {
+    if (config.filterable && trimmedValue) {
       if (typeof config.filterable === "function") {
-        createdOptions = config.filterable(inputValue, createdOptions);
+        createdOptions = config.filterable(trimmedValue, createdOptions);
       } else {
-        createdOptions = fuzzySort(inputValue, createdOptions, "text").map(
+        createdOptions = fuzzySort(trimmedValue, createdOptions, "text").map(
           (result) => ({
             ...result.item,
             label: format(result.item.value, "label", {
@@ -132,7 +133,6 @@ const createOptions = (
     }
 
     if (config.createable !== undefined) {
-      const trimmedValue = inputValue.trim();
       const exists = createdOptions.some((option) =>
         areEqualIgnoringCase(trimmedValue, option.text),
       );
