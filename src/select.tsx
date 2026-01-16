@@ -301,7 +301,11 @@ const Option: ParentComponent<OptionProps> = (props) => {
       data-disabled={select.isOptionDisabled(props.option)}
       data-focused={select.isOptionFocused(props.option)}
       class="solid-select-option"
-      onClick={() => select.pickOption(props.option)}
+      onClick={(e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        select.pickOption(props.option);
+      }}
     >
       {props.children}
     </div>
