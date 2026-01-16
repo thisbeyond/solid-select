@@ -54,8 +54,9 @@
   "sideEffects": false,
   "scripts": {
     "build": "tsup",
+    "build:site": "pnpm -C site build",
     "dev": "tsup --watch",
-    "dev:playground": "vite playground",
+    "dev:site": "pnpm -C site dev",
     "test": "vitest",
     "test:e2e": "playwright test",
     "prepublishOnly": "pnpm run build",

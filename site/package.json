@@ -1,0 +1,35 @@
+{
+  "name": "solid-select-site",
+  "version": "0.1.0",
+  "description": "Website for Solid Select library.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "license": "MIT",
+  "type": "module",
+  "devDependencies": {
+    "prettier": "^3.3.2",
+    "vite": "^5.3.3",
+    "vite-plugin-solid": "^2.10.2",
+    "vite-plugin-windicss": "^1.9.3"
+  },
+  "dependencies": {
+    "@floating-ui/dom": "^1.6.7",
+    "@fontsource/jetbrains-mono": "^5.0.20",
+    "@fontsource/poppins": "^5.0.14",
+    "@solidjs/router": "^0.13.6",
+    "@suid/icons-material": "^0.7.0",
+    "@suid/material": "^0.16.0",
+    "@suid/system": "^0.11.0",
+    "@thisbeyond/solid-select": "workspace:*",
+    "classcat": "^5.0.5",
+    "prismjs": "^1.29.0",
+    "solid-js": "^1.8.18"
+  },
+
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=9.0.0"
+  }
+}

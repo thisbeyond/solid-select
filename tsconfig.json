@@ -17,6 +17,6 @@
       "@thisbeyond/solid-select": ["./src/index.tsx"]
     }
   },
-  "include": ["src", "playground", "tests"],
+  "include": ["src", "site", "tests"],
   "exclude": ["node_modules"]
 }

@@ -1,0 +1,35 @@
+@import url("@thisbeyond/solid-select/style.css");
+
+.solid-select-container {
+  flex: 1;
+  max-width: 25rem;
+}
+
+.home.solid-select-container {
+  color: rgb(31, 41, 55);
+  font-size: 1.875rem;
+  font-weight: 700;
+  margin-bottom: 1.25rem;
+}
+
+.home .solid-select-list {
+  max-height: 50vh;
+  overflow-y: auto;
+  z-index: 60;
+}
+
+.home .solid-select-option {
+  font-weight: 400;
+  font-size: 1.5rem;
+}
+
+.hero.solid-select-container {
+  color: rgb(0, 0, 0);
+  font-size: 1.5rem;
+  flex: 1;
+}
+
+mark.distinctive {
+  color: rgb(59, 130, 246);
+  text-decoration: none;
+}

@@ -16,14 +16,22 @@ outputs = ['node_modules/.pnpm/lock.yaml']
 
 [tasks.build]
 run = 'pnpm run build'
+depends = ['pnpm-install']
 
 [tasks.dev]
 run = 'pnpm run dev'
-description = "Starts development server"
+description = "Starts development watch mode"
+depends = ['pnpm-install']
 
-[tasks.playground]
-run = 'pnpm run dev:playground'
-description = "Starts the playground"
+[tasks."dev:site"]
+run = 'pnpm run dev:site'
+description = "Starts the site in dev mode"
+depends = ['pnpm-install']
+
+[tasks."build:site"]
+run = 'pnpm run build:site'
+description = "Builds the site"
+depends = ['pnpm-install']
 
 [tasks.update]
 run = 'pnpm update --latest --interactive'
