@@ -4,17 +4,17 @@ import solidPlugin from 'vite-plugin-solid';
 export default defineConfig({
   plugins: [solidPlugin()],
   test: {
-    environment: 'jsdom',
+    environment: "jsdom",
     globals: true,
-    setupFiles: ['./vitest.setup.ts'],
+    setupFiles: ["./vitest.setup.ts"],
     server: {
       deps: {
         inline: [/solid-js/],
       },
     },
-    exclude: ['tests/e2e/**', 'node_modules/**'],
+    exclude: ["tests/e2e/**", "**/node_modules/**"],
   },
   resolve: {
-    conditions: ['development', 'browser'],
+    conditions: ["development", "browser"],
   },
 });
